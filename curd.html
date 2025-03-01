@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p id="text">hellow world</p>
+
+    <button id="btn">off</button>
+
+    <script>
+      let btn = document.getElementById("btn");
+      btn.addEventListener("click", function () {
+        let text = document.getElementById("text");
+        if (btn.textContent == "off") {
+          text.textContent = "ho gy h";
+          btn.style.backgroundColor = "green";
+          btn.style.color = "white";
+          btn.textContent = "on";
+        } else {
+          text.textContent = "nhi hua h ";
+          btn.style.backgroundColor = "yellow";
+          btn.textContent = "off";
+          btn.style.color = "red";
+        }
+      });
+    </script>
+  </body>
+</html>
