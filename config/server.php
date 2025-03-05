@@ -326,29 +326,75 @@ if (isset($_POST['deletelistapi'])) {
 if (isset($_POST['listrename'])) {
   $check_api = 0;
   $returndata["success"] = false;
-
-  $listId = $_POST['id'];
-  $listName = isset($_POST['rename']) ?? '';
-
-  // Check if list exists
+  $listId = $_POST['listId'];
+  // $listName = isset($_POST['listName']) ?? '';
+  $listName = $_POST['listName'];
   // $query = mysqli_query($conn, "SELECT id FROM lists WHERE id = '$listId'");
   // if (mysqli_num_rows($query) > 0) {
-    // Update list name
-    $updateQuery = "UPDATE lists SET list_name = '$listName' WHERE id = '$listId'";
-    $result = mysqli_query($conn, $updateQuery);
-
-    if ($result) {
-      $returndata["success"] = true;
-      $returndata["message"] = "List updated successfully";
-    } else {
-      $returndata["message"] = "Failed to update list";
-    }
-  // } else {
-  //   $returndata["message"] = "Invalid list ID";
-  // }
-
+  // Update list name
+  if (empty($listId)) {
+    $returndata["message"] = "List ID is required.";
+    echo json_encode($returndata, true);
+    exit;
+  }
+  if (empty($listName)) {
+    $returndata["message"] = "List name is required.";
+    echo json_encode($returndata, true);
+    exit;
+  }
+  $updateQuery = "UPDATE lists SET list_name = '$listName' WHERE id = '$listId'";
+  $result = mysqli_query($conn, $updateQuery);
+  if ($result) {
+    $returndata["success"] = true;
+    $returndata["message"] = "List updated successfully";
+  } else {
+    $returndata["message"] = "Failed to update list";
+  }
   echo json_encode($returndata, true);
 }
+
+// if (isset($_POST['listrename'])) {
+//   $check_api = 0;
+//   $returndata = ["success" => false];
+
+//   // Check if listId and listName exist in $_POST
+//   $listId = isset($_POST['listId']) ? $_POST['listId'] : null;
+//   $listName = isset($_POST['listName']) ? $_POST['listName'] : null;
+
+//   if (empty($listId)) {
+//     $returndata["message"] = "List ID is required.";
+//     echo json_encode($returndata);
+//     exit;
+//   }
+
+//   if (empty($listName)) {
+//     $returndata["message"] = "List name is required.";
+//     echo json_encode($returndata);
+//     exit;
+//   }
+
+//   // Database connection (Make sure $conn is defined before using it)
+//   if (!isset($conn)) {
+//     $returndata["message"] = "Database connection error.";
+//     echo json_encode($returndata);
+//     exit;
+//   }
+
+//   // Use prepared statements to prevent SQL injection
+//   $stmt = mysqli_prepare($conn, "UPDATE lists SET list_name = ? WHERE id = ?");
+//   mysqli_stmt_bind_param($stmt, "si", $listName, $listId);
+//   $result = mysqli_stmt_execute($stmt);
+
+//   if ($result) {
+//     $returndata["success"] = true;
+//     $returndata["message"] = "List updated successfully";
+//   } else {
+//     $returndata["message"] = "Failed to update list";
+//   }
+
+//   echo json_encode($returndata);
+// }
+
 
 // apifetch error 
 if ($check_api == 1) {

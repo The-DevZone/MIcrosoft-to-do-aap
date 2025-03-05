@@ -188,7 +188,7 @@ $(document).on("click", "#newList", function (e) {
         },
         success: function (response) {
             let res = JSON.parse(response);
-            console.log(res);
+            // console.log(res);
             if (res.success) {
                 rendernewlist(res.listdata, 1);
             }
@@ -200,16 +200,12 @@ $(document).on("click", "#newList", function (e) {
 });
 
 function fetchlistdata() {
-
     $.ajax({
         url: "./config/server.php",
         type: "POST",
         data: { getnewlist: true },
         success: function (response) {
-            // console.log(typeof response + "hellwoowow");
             let res = JSON.parse(response);
-            console.log(res);
-
             if (res.success) {
                 rendernewlist(res.getnewlistdata);
             }
@@ -239,29 +235,53 @@ function rendernewlist(data, is_input = '') {
       </li>
   `;
         $("#addList").append(html); // Append new list to the list
-        $(".activeInput").attr("data-id", res.id);
+        // $(".activeInput").attr("data-id", res.id);
         $(".listInput" + res.id).focus().select();
     })
 
 }
+let listid = null;
 
 $(document).click(function (event) {
-    if (!$(event.target).closest(".listInputActive").length) {
+    if (!$(event.target).closest(".listInputActive , .context-menu-new-list").length) {
         let activeInput = $(".activeInput").data("id");
         $(".listInput").addClass("hidden");
         $(".listSpan").removeClass("hidden");
         $(".listInput" + activeInput).focus().select();
+        let listName = $('.listInput' + activeInput).val();
+        updatelist(activeInput, listName);
     }
 })
 
-let listid = null;
+$(document).on("click", ".renamelist", function () {
+    let listId = $(this).data("id");
+    $(".activeInput").attr("data-id", listId);
+    $(".listInput" + listId).removeClass('hidden');
+    $(".listSpan" + listId).addClass('hidden');
+    $(".listInput" + listId).focus().select();
+})
+function updatelist(listId, listName) {
+    $.ajax({
+        url: "./config/server.php",
+        type: "POST",
+        data: { listrename: true, listId: listId, listName: listName },
+        success: function (response) {
+            let res = JSON.parse(response)
+            if (res.success) {
+                toastr.success(res.massage);
+                // getnewlist();
+                $("#addlist").empty();
+                fetchlistdata();
+            }
+        }
+    })
+}
+
 
 $(document).on("contextmenu", ".contexntRightClick", function (e) {
     e.preventDefault();
 
     listid = $(this).data("id");
-    // console.log(listid);
-    // alert(listid);
     $(".deletelist").attr("data-id", listid);
     $(".renamelist").attr("data-id", listid);
 
@@ -307,82 +327,12 @@ $(document).on("click", ".deletelist", function (e) {
     });
 });
 
+
 $("#closemodallist").on("click", function () {
+
     $(".close_modallist").trigger("click");
 })
 
 
-$(document).on("click", ".renamelist", function () {
-    listid = $(this).attr("data-id");
-    $(".listInput" + listid).removeClass('hidden');
-    $(".listSpan" + listid).addClass('hidden');
-    $(".listInput" + listid).focus().select();
-
-    // return false;
-    var newListName = $('.listInput' + listid).val();
-    console.log(newList)
-
-    $.ajax({
-        url: "./config/server.php",
-        type: "POST",
-        data: { listrename: true, id: listid, rename: newListName },
-        success: function (response) {
-            let res = JSON.parse(response)
-            // alert(res);
-            if (res.success) {
-                toastr.success(res.massage);
-                // $(".listInput" + listid).addClass('hidden');
-                // $(".listSpan" + listid).removeClass('hidden').text(newListName);
-                $("#addlist").empty();
-                fetchlistdata();
-            }
-        }
-    })
-});
-
-
-// $(document).on("click", ".renamelist", function () {
-//     let listid = $(this).attr("data-id");
-//     // alert(listid)
-//     console.log(listid);
-//     $(".listInput" + listid).removeClass('hidden');
-//     $(".listSpan" + listid).addClass('hidden');
-//     $(".listInput" + listid).focus().select();
-
-// });
-// // **Handle Keypress Event**
-// $(document).on("keydown", ".listInput", function (e) {
-//     if (e.which === 13) { // Enter key pressed
-//         let listid = $(this).attr("data-id");
-//         let newListName = $(this).val().trim(); // Correct way to fetch value
-
-//         if (newListName === "") {
-//             toastr.error("List name cannot be empty!");
-//             return;
-//         }
-
-//         $.ajax({
-//             url: "./config/server.php",
-//             type: "POST",
-//             data: { listrename: true, id: listid, rename: newListName },
-//             success: function (response) {
-//                 let res = JSON.parse(response);
-//                 // console.log(res);
-//                 if (res.success) {
-//                     toastr.success(res.massage);
-//                     $(".listInput" + listid).addClass('hidden');
-//                     $(".listSpan" + listid).removeClass('hidden').text(newListName);
-//                     // $("#addlist").empty();
-//                     // fetchlistdata();
-//                 } else {
-//                     toastr.error("Rename failed!");
-//                 }
-//             },
-//             error: function () {
-//                 toastr.error("Server error!");
-//             }
-//         });
-//     }
-// });
 
 

@@ -1,8 +1,16 @@
-
-console.log(a);
-var a = "rohit";
-console.log(a);
-let a = "rohit";
-console.log(a);
-const a = "rohit";
-
+let vehicle = {
+    wheels: '4',
+    fuelType: 'Gasoline',
+    color: 'Green'
+  }
+  let carProps = {
+    type: {
+      value: 'Volkswagen'
+    },
+    model: {
+      value: 'Golf'
+    }
+  }
+  
+  var car = Object.create(vehicle, carProps);
+  console.log(car.wheels); 

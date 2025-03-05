@@ -87,7 +87,6 @@ if (!isset($_SESSION['loginid'])) {
 </head>
 
 <body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col md:flex-row">
-<!-- hellow my name is rohit verma -->
   <!-- Mobile Header -->
   <header class="md:hidden bg-gray-800 p-4 flex justify-between items-center">
     <div class="flex items-center">
@@ -170,9 +169,9 @@ if (!isset($_SESSION['loginid'])) {
     </ul>
     <!-- Menu -->
     <nav>
+      <!-- rohit verma -->
       <input type="hidden" class="activeInput">
       <ul class="space-y-2 px-1 pb-10 " id="addList"></ul>
-      <!-- contextmenu left side list  -->
       <div class=" context-menu-new-list hidden absolute w-52 bg-gray-800 text-white rounded-lg shadow-lg z-50">
         <ul class="py-2">
           <li class="flex items-center px-4 py-2 hover:bg-gray-700 cursor-pointer renamelist ">
