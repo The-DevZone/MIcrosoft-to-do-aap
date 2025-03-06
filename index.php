@@ -135,37 +135,11 @@ if (!isset($_SESSION['loginid'])) {
     </form>
 
     <!-- Menu -->
-    <ul class="space-y-3 border-b border-gray-200 mb-2">
+    <ul class="space-y-3 border-b border-gray-200 mb-2 default-list">
       <li class="flex items-center space-x-2 text-blue-400">
         <span>🌟</span>
         <a href="#" class="hover:underline">My Day</a>
       </li>
-
-      <li class="flex items-center space-x-2">
-        <span>⭐</span>
-        <a href="#" class="hover:underline">Important</a>
-      </li>
-
-      <li class="flex items-center space-x-2">
-        <span>📅</span>
-        <a href="#" class="hover:underline">Planned</a>
-      </li>
-
-      <li class="flex items-center space-x-2">
-        <span>👤</span>
-        <a href="#" class="hover:underline">Assigned to me</a>
-      </li>
-
-      <li class="flex items-center space-x-2">
-        <span>📂</span>
-        <a href="#" class="hover:underline">Tasks</a>
-      </li>
-
-      <li class="flex items-center space-x-2">
-        <span>📝</span>
-        <a href="#" class="hover:underline">Today Task</a>
-      </li>
-
     </ul>
     <!-- Menu -->
     <nav>
@@ -208,7 +182,7 @@ if (!isset($_SESSION['loginid'])) {
       <div class="relative p-4 w-full max-w-md h-full md:h-auto">
         <!-- Modal content -->
         <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-          <button type="button" 
+          <button type="button"
             class="  text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
             data-modal-toggle="deletesidelist">
             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -289,7 +263,7 @@ if (!isset($_SESSION['loginid'])) {
     <!-- Header -->
 
     <!-- display render data  -->
-    <div id="display-data" class="">
+    <div id="display-data">
       <!-- <div
         class="flex justify-between border w-full border-black h-10 bg-yellow-800 text-white rounded mb-2 p-2 items-center">
         <div class="flex items-center space-x-2">
@@ -356,9 +330,6 @@ if (!isset($_SESSION['loginid'])) {
       </div>
     </div>
     <!-- delete modal box -->
-
-
-
 
     <!-- Add Task Input -->
     <div class="fixed bottom-2 w-10/12  submitScreenSize " is_open="0">

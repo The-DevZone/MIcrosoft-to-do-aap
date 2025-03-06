@@ -229,43 +229,19 @@ if (isset($_POST['deleteTask'])) {
   echo json_encode($returndata, true);
 }
 
-// update task 
-if (isset($_POST['updateTask'])) {
-
-  $check_api = 0;
-
-  $returndata["success"] = false;
-  $id = $_POST['id'];
-  $task = $_POST['task'];
-  $errcount = 0;
-
-  if ($task == '') {
-    $returndata["task_error"] = "Task is required.";
-    $errcount++;
-  }
-
-  if ($errcount == 0) {
-    $result = mysqli_query($conn, "update tasks set task = '$task' where id = '$id'");
-    if ($result) {
-      $returndata["success"] = true;
-      $returndata["massage"] = "Task updated successfully";
-    } else {
-      $returndata["massage"] = "Task not updated successfully";
-    }
-  }
-  echo json_encode($returndata, true);
-}
-
 //  new list create 
 if (isset($_POST['newListdata'])) {
   $check_api = 0;
   // $user_id = $_POST['user_id'];
   $list_name = $_POST['listname'];
+  $temp_list = $_POST['temp_list'];
+  $list_no = $_POST['list_no'];
   $returndata = ["success" => false];
 
-  $run = mysqli_query($conn, "INSERT INTO lists (list_name 	) VALUES ('$list_name' )");
+  $run = mysqli_query($conn, "INSERT INTO lists (list_name , temp_list , list_no 	) VALUES ('$list_name' , '$temp_list' , '$list_no')");
+
   if ($run) {
-    $result = mysqli_query($conn, "select id , list_name from lists where  id = '$conn->insert_id' ORDER BY id desc");
+    $result = mysqli_query($conn, "select id , list_name , temp_list, list_no from lists where  id = '$conn->insert_id' ORDER BY id desc");
     $row = mysqli_fetch_assoc($result);
     $data[] = $row;
     $returndata["listdata"] = $data;
@@ -291,8 +267,10 @@ if (isset($_POST["getnewlist"])) {
     }
     $returndata["getnewlistdata"] = $data;
     $returndata["success"] = true;
+    $returndata["massage"] = "Data fetched success fully";
   } else {
     $returndata["success"] = false;
+    $returndata["massage"] = "Data not fetched";
   }
 
   echo json_encode($returndata, true);
@@ -327,11 +305,7 @@ if (isset($_POST['listrename'])) {
   $check_api = 0;
   $returndata["success"] = false;
   $listId = $_POST['listId'];
-  // $listName = isset($_POST['listName']) ?? '';
   $listName = $_POST['listName'];
-  // $query = mysqli_query($conn, "SELECT id FROM lists WHERE id = '$listId'");
-  // if (mysqli_num_rows($query) > 0) {
-  // Update list name
   if (empty($listId)) {
     $returndata["message"] = "List ID is required.";
     echo json_encode($returndata, true);
@@ -353,54 +327,39 @@ if (isset($_POST['listrename'])) {
   echo json_encode($returndata, true);
 }
 
-// if (isset($_POST['listrename'])) {
-//   $check_api = 0;
-//   $returndata = ["success" => false];
-
-//   // Check if listId and listName exist in $_POST
-//   $listId = isset($_POST['listId']) ? $_POST['listId'] : null;
-//   $listName = isset($_POST['listName']) ? $_POST['listName'] : null;
-
-//   if (empty($listId)) {
-//     $returndata["message"] = "List ID is required.";
-//     echo json_encode($returndata);
-//     exit;
-//   }
-
-//   if (empty($listName)) {
-//     $returndata["message"] = "List name is required.";
-//     echo json_encode($returndata);
-//     exit;
-//   }
-
-//   // Database connection (Make sure $conn is defined before using it)
-//   if (!isset($conn)) {
-//     $returndata["message"] = "Database connection error.";
-//     echo json_encode($returndata);
-//     exit;
-//   }
-
-//   // Use prepared statements to prevent SQL injection
-//   $stmt = mysqli_prepare($conn, "UPDATE lists SET list_name = ? WHERE id = ?");
-//   mysqli_stmt_bind_param($stmt, "si", $listName, $listId);
-//   $result = mysqli_stmt_execute($stmt);
-
-//   if ($result) {
-//     $returndata["success"] = true;
-//     $returndata["message"] = "List updated successfully";
-//   } else {
-//     $returndata["message"] = "Failed to update list";
-//   }
-
-//   echo json_encode($returndata);
-// }
-
-
 // apifetch error 
 if ($check_api == 1) {
   $returndata["success"] = false;
   $returndata["massage"] = "Invalid request Api";
   echo json_encode($returndata, true);
+}
+
+
+if (isset($_POST['defaultlist'])) {
+  $check_api = 0;
+  $returndata["success"] = false;
+
+  $result = mysqli_query($conn, "SELECT id , list_name  from lists where is_default = '1'");
+  // echo "<pre>";
+  // print_r($result);
+  // die;
+
+  if ($result) {
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+      $data[] = $row;
+    }
+    $returndata["defaultlistdata"] = $data;
+    $returndata["success"] = true;
+    $returndata["massage"] = "Data fetched success fully";
+  } else {
+    $returndata["success"] = true;
+    $returndata["massage"] = "Data not found";
+
+  }
+
+  echo json_encode($returndata, true);
+
 }
 
 ?>

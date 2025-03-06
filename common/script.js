@@ -21,6 +21,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     fetchdata(); // Load tasks when page loads
     fetchlistdata();
+    reanderDefaultList();
 
 });
 
@@ -178,13 +179,22 @@ $("#close_modal").on("click", function () {
 $(document).on("click", "#newList", function (e) {
     e.preventDefault();
     let listname = "Untitled list";
+    let temp_list = "untitled list";
+    let list_no = 1;
+
+    if (temp_list != undefined) {
+
+    }
+
 
     $.ajax({
         url: "./config/server.php",
         type: "POST",
         data: {
             newListdata: true,
-            listname: listname
+            listname: listname,
+            temp_list: temp_list,
+            list_no: list_no
         },
         success: function (response) {
             let res = JSON.parse(response);
@@ -215,8 +225,6 @@ function fetchlistdata() {
         }
     });
 }
-
-
 function rendernewlist(data, is_input = '') {
     if (is_input == 1) {
         var input = "";
@@ -277,7 +285,6 @@ function updatelist(listId, listName) {
     })
 }
 
-
 $(document).on("contextmenu", ".contexntRightClick", function (e) {
     e.preventDefault();
 
@@ -332,6 +339,24 @@ $("#closemodallist").on("click", function () {
 
     $(".close_modallist").trigger("click");
 })
+
+// fetch default list data
+function fetchDefaultList() {
+    $.ajax({
+        url: "./config/server.php",
+        type: "POST",
+        data: { defaultlist: true },
+        success: function (response) {
+            let res = JSON.parse(response);
+            console.log(res);
+            if (res.success) {
+                renderDefaultList(res.defaultlistdata);
+            } else {
+                console.error(res.massage);
+            }
+        }
+    })
+}
 
 
 
