@@ -43,7 +43,7 @@ if (isset($_POST['signup'])) {
   }
 
   if ($password !== $confirmPassword) {
-    $returndata["password_error"] = "Passwords do rohit match.";
+    $returndata["password_error"] = "Passwords do't  match.";
     $errcount++;
   }
 
@@ -148,6 +148,7 @@ if (isset($_POST['task_submit'])) {
 
     $taskinput = $_POST['taskinput'];
     $user_id = $_POST['user_id'];
+    $activeListId = $_POST['activeListId'];
 
     if (empty($taskinput)) {
       $returntaskdata["massage"] = "Task is required.";
@@ -165,12 +166,20 @@ if (isset($_POST['task_submit'])) {
         $taskerrcount++;
       }
     }
+    if (empty($activeListId)) {
+      $returntaskdata["massage"] = "List id is required.";
+      $taskerrcount++;
+    }
+    // $where = '';
+    // if ($activeListId == 'Tasks') {
+    //   $where = "and list_id = '$activeListId'";
+    // }
 
     if ($taskerrcount == 0) {
-      $qry = "insert into tasks (tasks_name ,created_by , updated_by) values ('$taskinput' , '$user_id' , '$user_id')";
+      $qry = "insert into tasks (tasks_name , list_id ,created_by , updated_by) values ('$taskinput' , '$activeListId' , '$user_id' , '$user_id')";
       $result = mysqli_query($conn, $qry);
       if ($result) {
-        $run = mysqli_query($conn, "select * from  tasks where created_by = '$user_id' order by id desc");
+        $run = mysqli_query($conn, "select * from  tasks where created_by = '$user_id' and list_id = '$activeListId' $where order by id desc");
         if ($run) {
           $data = [];
           while ($row = mysqli_fetch_assoc($run)) {
@@ -194,13 +203,18 @@ if (isset($_POST['task_submit'])) {
 if (isset($_POST['getData'])) {
 
   $check_api = 0;
-
   $returntaskdata["success"] = false;
+  $where = "";
+  if (isset($_POST['id'])) {
+    $id = $_POST['id'];
+    $where = "and list_id = '$id'";
+  }
 
-  $result = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]' order by  id desc");
+
+  $result = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]' $where order by  id desc");
   if ($result) {
     $data = [];
-    while ($row = mysqli_fetch_assoc(result: $result)) {
+    while ($row = mysqli_fetch_assoc($result)) {
       $data[] = $row;
     }
     $returntaskdata["tasklist"] = $data;
@@ -236,9 +250,10 @@ if (isset($_POST['newListdata'])) {
   $list_name = $_POST['listname'];
   $temp_list = $_POST['temp_list'];
   $list_no = $_POST['list_no'];
+  $is_default = 0;
   $returndata = ["success" => false];
 
-  $run = mysqli_query($conn, "INSERT INTO lists (list_name , temp_list , list_no 	) VALUES ('$list_name' , '$temp_list' , '$list_no')");
+  $run = mysqli_query($conn, "INSERT INTO lists (list_name , is_default , temp_list , list_no 	) VALUES ('$list_name' ,'$is_default' , '$temp_list' , '$list_no')");
 
   if ($run) {
     $result = mysqli_query($conn, "select id , list_name , temp_list, list_no from lists where  id = '$conn->insert_id' ORDER BY id desc");
@@ -259,7 +274,8 @@ if (isset($_POST["getnewlist"])) {
   $check_api = 0;
 
   $returndata["success"] = false;
-  $result = mysqli_query($conn, "select id, list_name from lists  ORDER BY id desc");
+
+  $result = mysqli_query($conn, "select id, list_name from lists where is_default = '0' ORDER BY id desc");
   if ($result) {
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
@@ -272,9 +288,9 @@ if (isset($_POST["getnewlist"])) {
     $returndata["success"] = false;
     $returndata["massage"] = "Data not fetched";
   }
-
   echo json_encode($returndata, true);
 }
+
 // delete list
 if (isset($_POST['deletelistapi'])) {
   $check_api = 0;
@@ -327,39 +343,30 @@ if (isset($_POST['listrename'])) {
   echo json_encode($returndata, true);
 }
 
-// apifetch error 
-if ($check_api == 1) {
-  $returndata["success"] = false;
-  $returndata["massage"] = "Invalid request Api";
-  echo json_encode($returndata, true);
-}
-
-
-if (isset($_POST['defaultlist'])) {
+if (isset($_POST['defaultList'])) {
   $check_api = 0;
   $returndata["success"] = false;
 
   $result = mysqli_query($conn, "SELECT id , list_name  from lists where is_default = '1'");
-  // echo "<pre>";
-  // print_r($result);
-  // die;
-
   if ($result) {
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
       $data[] = $row;
     }
-    $returndata["defaultlistdata"] = $data;
+    $returndata["listData"] = $data;
     $returndata["success"] = true;
     $returndata["massage"] = "Data fetched success fully";
   } else {
     $returndata["success"] = true;
     $returndata["massage"] = "Data not found";
-
   }
-
   echo json_encode($returndata, true);
-
 }
 
+// apifetch error  it should be  always in bottom
+if ($check_api == 1) {
+  $returndata["success"] = false;
+  $returndata["massage"] = "Invalid request Api";
+  echo json_encode($returndata, true);
+}
 ?>

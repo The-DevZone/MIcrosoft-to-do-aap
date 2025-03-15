@@ -247,9 +247,7 @@ if (isset($_SESSION['loginid'])) {
                     url: url,
                     data: form.serialize(),
                     success: function (response) {
-                        // console.log(response);
                         let arr = JSON.parse(response);
-                        console.log(arr);
                         if (arr.success == true) {
                             toastr.success(arr.massage);
                             setTimeout(() => {

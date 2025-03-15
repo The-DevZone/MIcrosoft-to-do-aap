@@ -19,9 +19,11 @@ $(document).ready(function () {
 });
 // toastr end
 $(document).ready(function () {
-    fetchdata(); // Load tasks when page loads
     fetchlistdata();
-    reanderDefaultList();
+    fetchDefaultList();
+
+    let activeListId = $(".active-list").data("id");
+    fetchdata(activeListId);
 
 });
 
@@ -29,6 +31,12 @@ $(document).on("click", "#task-add", function (e) {
     e.preventDefault();
     let task = $("#taskinput").val().trim();
     let errorCount = 0;
+    let form = $("#taskform");
+    let url = form.attr("action");
+    let activeListId = $(".active-list").data("id");
+
+    let formData = form.serialize();
+    formData += "&activeListId=" + activeListId;
 
     // Validation
     if (task === "") {
@@ -37,12 +45,11 @@ $(document).on("click", "#task-add", function (e) {
     }
 
     if (errorCount == 0) {
-        let form = $("#taskform");
-        let url = form.attr("action");
+
         $.ajax({
             url: url,
             type: "POST",
-            data: form.serialize(),
+            data: formData,
             success: function (response) {
 
                 let arr = JSON.parse(response);
@@ -57,11 +64,20 @@ $(document).on("click", "#task-add", function (e) {
 });
 
 // fetch data
-function fetchdata() {
+function fetchdata(id = '') {
+    let request = {
+        getData: true,
+        id: id
+    }
+
+    if (id != '') {
+        request.id = id;
+    }
+
     $.ajax({
         url: "./config/server.php",
         type: "POST",
-        data: { getData: true },
+        data: request,
         success: function (response) {
             let arr = JSON.parse(response);
             if (arr.success) {
@@ -90,7 +106,6 @@ function renderdata(tasklist) {
                     <input type="checkbox" class="mr-2"   >
                     <p class="newtask">${element.tasks_name}</p>
                   </div>
-
                    <button class="star-btn">
                     ${element.important ? '🌟' : '⭐'}
                     </button>
@@ -162,8 +177,10 @@ $(document).on("click", ".deletetasklist", function () {
             let res = JSON.parse(response);
             if (res.success) {
                 toastr.success(res.massage);
-
-                fetchdata(); // Refresh tasks
+                setTimeout(() => {
+                    let activeListId = $(".active-list").data("id");
+                    fetchdata(activeListId);
+                }, 500);
             } else {
                 console.error("Error:", res.massage);
             }
@@ -176,38 +193,39 @@ $("#close_modal").on("click", function () {
     $(".close").trigger("click");
 })
 // sidebarlistadd
-$(document).on("click", "#newList", function (e) {
-    e.preventDefault();
-    let listname = "Untitled list";
-    let temp_list = "untitled list";
-    let list_no = 1;
+// $(document).on("click", "#newList", function (e) {
+//     e.preventDefault();
+//     // alert("new list");
+//     let listname = "Untitled list";
+//     // let temp_list = "untitled list";
+//     // let list_no = 1;
 
-    if (temp_list != undefined) {
+//     // if (temp_list != undefined) {
 
-    }
+//     // }
 
 
-    $.ajax({
-        url: "./config/server.php",
-        type: "POST",
-        data: {
-            newListdata: true,
-            listname: listname,
-            temp_list: temp_list,
-            list_no: list_no
-        },
-        success: function (response) {
-            let res = JSON.parse(response);
-            // console.log(res);
-            if (res.success) {
-                rendernewlist(res.listdata, 1);
-            }
-            else {
-                console.error("Error:", res.massage);
-            }
-        }
-    });
-});
+//     $.ajax({
+//         url: "./config/server.php",
+//         type: "POST",
+//         data: {
+//             newListdata: true,
+//             listname: listname,
+//             // temp_list: temp_list,
+//             // list_no: list_no
+//         },
+//         success: function (response) {
+//             let res = JSON.parse(response);
+//             // console.log(res);
+//             if (res.success) {
+//                 rendernewlist(res.listdata, 1);
+//             }
+//             else {
+//                 console.error("Error:", res.massage);
+//             }
+//         }
+//     });
+// });
 
 function fetchlistdata() {
     $.ajax({
@@ -216,8 +234,12 @@ function fetchlistdata() {
         data: { getnewlist: true },
         success: function (response) {
             let res = JSON.parse(response);
+            console.log(res);
             if (res.success) {
+                $("#addList").empty();
                 rendernewlist(res.getnewlistdata);
+            } else {
+
             }
         },
         error: function (xhr, status, error) {
@@ -243,54 +265,57 @@ function rendernewlist(data, is_input = '') {
       </li>
   `;
         $("#addList").append(html); // Append new list to the list
-        // $(".activeInput").attr("data-id", res.id);
+        $(".activeInput").attr("data-id", res.id);
         $(".listInput" + res.id).focus().select();
     })
-
 }
-let listid = null;
+let listId = null;
 
 $(document).click(function (event) {
     if (!$(event.target).closest(".listInputActive , .context-menu-new-list").length) {
-        let activeInput = $(".activeInput").data("id");
+        let activeInput = $(".activeInput").data("id");  // html ma ha ya id input tag ma h 
+        // alert(activeInput);
         $(".listInput").addClass("hidden");
         $(".listSpan").removeClass("hidden");
         $(".listInput" + activeInput).focus().select();
         let listName = $('.listInput' + activeInput).val();
-        updatelist(activeInput, listName);
+        // updatelist(activeInput, listName);
     }
 })
 
-$(document).on("click", ".renamelist", function () {
-    let listId = $(this).data("id");
-    $(".activeInput").attr("data-id", listId);
-    $(".listInput" + listId).removeClass('hidden');
-    $(".listSpan" + listId).addClass('hidden');
-    $(".listInput" + listId).focus().select();
-})
-function updatelist(listId, listName) {
-    $.ajax({
-        url: "./config/server.php",
-        type: "POST",
-        data: { listrename: true, listId: listId, listName: listName },
-        success: function (response) {
-            let res = JSON.parse(response)
-            if (res.success) {
-                toastr.success(res.massage);
-                // getnewlist();
-                $("#addlist").empty();
-                fetchlistdata();
-            }
-        }
-    })
-}
+// $(document).on("click", ".renamelist", function () {
+//     let listId = $(this).data("id");
+//     alert(listId);
+//     $(".activeInput").attr("data-id", listId);
+//     $(".listInput" + listId).removeClass('hidden');
+//     $(".listSpan" + listId).addClass('hidden');
+//     $(".listInput" + listId).focus().select();
+// })
+// function updatelist(listId, listName) {
+//     $.ajax({
+//         url: "./config/server.php",
+//         type: "POST",
+//         data: { listrename: true, listId: listId, listName: listName },
+//         success: function (response) {
+//             let res = JSON.parse(response)
+//             // console.log(res);
+//             // alert(res.massage);
+//             if (res.success) {
+//                 toastr.success(res.massage);
+//                 // getnewlist();
+//                 $("#addlist").empty();
+//                 fetchlistdata();
+//             }
+//         }
+//     })
+// }
 
 $(document).on("contextmenu", ".contexntRightClick", function (e) {
     e.preventDefault();
 
-    listid = $(this).data("id");
-    $(".deletelist").attr("data-id", listid);
-    $(".renamelist").attr("data-id", listid);
+    listId = $(this).data("id");
+    $(".deletelist").attr("data-id", listId);
+    $(".renamelist").attr("data-id", listId);
 
     let menu = $(".context-menu-new-list");
     let winWidth = $(window).width();
@@ -314,11 +339,11 @@ $(document).on("click", function () {
 
 $(document).on("click", ".deletelist", function (e) {
 
-    listid = $(this).attr("data-id");
+    listId = $(this).attr("data-id");
     $.ajax({
         url: "./config/server.php",
         type: "POST",
-        data: { deletelistapi: true, id: listid },
+        data: { deletelistapi: true, id: listId },
         success: function (response) {
             let res = JSON.parse(response)
             if (res.success) {
@@ -345,12 +370,20 @@ function fetchDefaultList() {
     $.ajax({
         url: "./config/server.php",
         type: "POST",
-        data: { defaultlist: true },
+        data: { defaultList: true },
         success: function (response) {
             let res = JSON.parse(response);
-            console.log(res);
+            let i = 0;
             if (res.success) {
-                renderDefaultList(res.defaultlistdata);
+                res.listData.forEach(element => {
+                    let active = "";
+                    if (i == 0) {
+                        active = "active-list";
+                    }
+                    let html = `<li class="${active} active  cursor-pointer flex items-center space-x-2 text-blue-400  " data-id='${element.id}'>${element.list_name} </li>`;
+                    i++;
+                    $(".default-list").append(html);
+                });
             } else {
                 console.error(res.massage);
             }
@@ -358,6 +391,10 @@ function fetchDefaultList() {
     })
 }
 
-
-
-
+$(document).on("click", ".getDefaultList", function () {
+    let id = $(this).attr("data-id");
+    alert(id);
+    $(".getDefaultList").removeClass("active-list");
+    $(this).addClass("active-list");
+    fetchdata(id);
+});

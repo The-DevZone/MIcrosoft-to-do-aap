@@ -33,6 +33,7 @@ if (!isset($_SESSION['loginid'])) {
     }
   </script>
 
+  <link rel="stylesheet" href="./assets/CSS/style.css">
   <style>
     /* width */
     ::-webkit-scrollbar {
@@ -136,19 +137,19 @@ if (!isset($_SESSION['loginid'])) {
 
     <!-- Menu -->
     <ul class="space-y-3 border-b border-gray-200 mb-2 default-list">
-      <li class="flex items-center space-x-2 text-blue-400">
-        <span>🌟</span>
-        <a href="#" class="hover:underline">My Day</a>
-      </li>
+      <li class="active cursor-pointer flex items-center space-x-2 text-blue-400 getDefaultList" data-id="My Day">🌟My Day</li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400" data-id="Important"> ⭐Important </li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400" data-id="Planned">📅Planned</li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400" data-id="Assigned">👤Assigned to me</li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400" data-id="Tasks">📂Tasks</li>
     </ul>
     <!-- Menu -->
     <nav>
-      <!-- rohit verma -->
       <input type="hidden" class="activeInput">
       <ul class="space-y-2 px-1 pb-10 " id="addList"></ul>
       <div class=" context-menu-new-list hidden absolute w-52 bg-gray-800 text-white rounded-lg shadow-lg z-50">
         <ul class="py-2">
-          <li class="flex items-center px-4 py-2 hover:bg-gray-700 cursor-pointer renamelist ">
+          <li class="flex items-center px-4 py-2 hover:bg-gray-700 cursor-pointer  renamelist ">
             <span class="mr-3">✏️</span> Rename list <span class="ml-auto text-gray-400">F2</span>
           </li>
           <li class="flex items-center px-4 py-2 hover:bg-gray-700 cursor-pointer">
@@ -173,7 +174,6 @@ if (!isset($_SESSION['loginid'])) {
         </ul>
       </div>
     </nav>
-
 
     <!-- delete modal box -->
     <!-- Main modal -->
@@ -215,14 +215,11 @@ if (!isset($_SESSION['loginid'])) {
     </div>
     <!-- delete modal  -->
 
-
     <button id="newList"
       class="text-sm bg-blue-950  fixed bottom-0 -left-2 hover:bg-blue-950 px-2 py-2 w-64  text-blue-500 hover:underline flex items-center h-38  space-x-2">
       <span class=" text-white">➕</span>
       <span class="text-white ">New list</span>
     </button>
-
-
 
     <!-- contextmenu left side list  -->
   </aside>
@@ -395,7 +392,6 @@ if (!isset($_SESSION['loginid'])) {
     </div>
     <!-- Context Menu -->
   </main>
-
 
   <!-- Sidebar -->
   <div class="sidebar h-screen w-1/5  fixed top-0 right-0 hidden ">
