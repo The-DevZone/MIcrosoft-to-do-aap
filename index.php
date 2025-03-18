@@ -132,16 +132,21 @@ if (!isset($_SESSION['loginid'])) {
           placeholder="Search Mockups, Logos..." required />
         <button type="submit"
           class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+          
       </div>
     </form>
 
     <!-- Menu -->
     <ul class="space-y-3 border-b border-gray-200 mb-2 default-list">
-      <li class="active cursor-pointer flex items-center space-x-2 text-blue-400 getDefaultList" data-id="My Day">🌟My Day</li>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400" data-id="Important"> ⭐Important </li>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400" data-id="Planned">📅Planned</li>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400" data-id="Assigned">👤Assigned to me</li>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400" data-id="Tasks">📂Tasks</li>
+      <li class="active-list cursor-pointer flex items-center space-x-2 text-blue-400 getDefaultList" data-id="MyDay">
+        🌟My Day</li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Important">
+        ⭐Important </li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Planned">📅Planned
+      </li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Assigned">👤Assigned
+        to me</li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Tasks">📂Tasks</li>
     </ul>
     <!-- Menu -->
     <nav>
@@ -485,3 +490,6 @@ if (!isset($_SESSION['loginid'])) {
 </body>
 
 </html>
+
+
+

@@ -170,16 +170,16 @@ if (isset($_POST['task_submit'])) {
       $returntaskdata["massage"] = "List id is required.";
       $taskerrcount++;
     }
-    // $where = '';
-    // if ($activeListId == 'Tasks') {
-    //   $where = "and list_id = '$activeListId'";
-    // }
+    $where = '';
+    if ($activeListId == 'Tasks') {
+      $where = "and list_id = '$activeListId'";
+    }
 
     if ($taskerrcount == 0) {
       $qry = "insert into tasks (tasks_name , list_id ,created_by , updated_by) values ('$taskinput' , '$activeListId' , '$user_id' , '$user_id')";
       $result = mysqli_query($conn, $qry);
       if ($result) {
-        $run = mysqli_query($conn, "select * from  tasks where created_by = '$user_id' and list_id = '$activeListId' $where order by id desc");
+        $run = mysqli_query($conn, "select * from  tasks where created_by = '$user_id' and list_id = '$activeListId' $where  order by id desc");
         if ($run) {
           $data = [];
           while ($row = mysqli_fetch_assoc($run)) {
@@ -201,7 +201,6 @@ if (isset($_POST['task_submit'])) {
 
 // fetching data from database
 if (isset($_POST['getData'])) {
-
   $check_api = 0;
   $returntaskdata["success"] = false;
   $where = "";
@@ -209,7 +208,6 @@ if (isset($_POST['getData'])) {
     $id = $_POST['id'];
     $where = "and list_id = '$id'";
   }
-
 
   $result = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]' $where order by  id desc");
   if ($result) {
@@ -359,6 +357,27 @@ if (isset($_POST['defaultList'])) {
   } else {
     $returndata["success"] = true;
     $returndata["massage"] = "Data not found";
+  }
+  echo json_encode($returndata, true);
+}
+
+if (isset($_POST['updateImp'])) {
+  $check_api = 0;
+  $returndata["success"] = false;
+  $id = $_POST['id'];
+  $imp = $_POST['imp'];
+  if ($imp == 0) {
+    $is_imp = 1;
+  } else {
+    $is_imp = 0;
+  }
+  $result = mysqli_query($conn, "update tasks set is_imp ='$is_imp'  WHERE id = '$id'");
+  if ($result) {
+    $returndata["success"] = true;
+    $returndata["massage"] = "Task add Important successfully";
+  } else {
+    $returndata["success"] = true;
+    $returndata["massage"] = "Task not add Important successfully";
   }
   echo json_encode($returndata, true);
 }

@@ -20,11 +20,9 @@ $(document).ready(function () {
 // toastr end
 $(document).ready(function () {
     fetchlistdata();
-    fetchDefaultList();
-
     let activeListId = $(".active-list").data("id");
+    // console.log(activeListId);
     fetchdata(activeListId);
-
 });
 
 $(document).on("click", "#task-add", function (e) {
@@ -45,21 +43,20 @@ $(document).on("click", "#task-add", function (e) {
     }
 
     if (errorCount == 0) {
-
         $.ajax({
             url: url,
             type: "POST",
             data: formData,
             success: function (response) {
-
                 let arr = JSON.parse(response);
-
                 if (arr.success) {
                     $("#taskinput").val("").removeClass("border-red-500");
                     renderdata(arr.tasklist); // Refresh task list after adding
                 }
             }
         });
+    } else {
+        toastr.error("Task name is required");
     }
 });
 
@@ -67,7 +64,6 @@ $(document).on("click", "#task-add", function (e) {
 function fetchdata(id = '') {
     let request = {
         getData: true,
-        id: id
     }
 
     if (id != '') {
@@ -99,6 +95,13 @@ function renderdata(tasklist) {
     let taskHtml = '';
     if (tasklist) {
         tasklist.forEach(element => {
+
+            let is_imp = "text-white";
+            if (element.is_imp == 1) {
+                is_imp = "text-yellow-500";
+            }
+
+            // let starColor = element.star == 1 ? "background-yellow-500" : "text-white";
             taskHtml += `
               <div class="text-center  overflow-hidden task-option  deletebtn  sidebarmenu" data-id="${element.id}" >
                 <div  class="   flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
@@ -106,9 +109,9 @@ function renderdata(tasklist) {
                     <input type="checkbox" class="mr-2"   >
                     <p class="newtask">${element.tasks_name}</p>
                   </div>
-                   <button class="star-btn">
-                    ${element.important ? '🌟' : '⭐'}
-                    </button>
+                   <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImp${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
+                    <i class="  fa-regular fa-star"> </i>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -120,7 +123,12 @@ function renderdata(tasklist) {
     }
 }
 
-// mainscreen size and input screen size
+$(document).on("click", ".star-btn", function (e) {
+
+    // let id = $(this).attr("data-id");
+    e.stopPropagation();
+});
+
 $(document).on("click", ".sidebarmenu", function (e) {
     $(".sidebar").toggle();
     let is_open = $(".main_screen_size").attr("is_open");
@@ -189,7 +197,6 @@ $(document).on("click", ".deletetasklist", function () {
 });
 
 $("#close_modal").on("click", function () {
-    // alert("close modal");
     $(".close").trigger("click");
 })
 // sidebarlistadd
@@ -234,7 +241,7 @@ function fetchlistdata() {
         data: { getnewlist: true },
         success: function (response) {
             let res = JSON.parse(response);
-            console.log(res);
+            // console.log(res);
             if (res.success) {
                 $("#addList").empty();
                 rendernewlist(res.getnewlistdata);
@@ -261,6 +268,7 @@ function rendernewlist(data, is_input = '') {
       <li class="contexntRightClick delete_list max-h-40 cursor-pointer flex items-center space-x-2 text-white" data-id="${res.id}">
         <i class="fa-solid fa-bars"></i>
           <span class=" listSpan${res.id} ${span}  pointer-events-none listSpan listSpanActive"> ${res.list_name}</span>
+          
           <input class="  listInput${res.id} ${input} listInput listInputActive bg-blue-800  border-none border-b-2 border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-blue-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500" type="text" name="list_name" value="${res.list_name}">
       </li>
   `;
@@ -366,35 +374,61 @@ $("#closemodallist").on("click", function () {
 })
 
 // fetch default list data
-function fetchDefaultList() {
-    $.ajax({
-        url: "./config/server.php",
-        type: "POST",
-        data: { defaultList: true },
-        success: function (response) {
-            let res = JSON.parse(response);
-            let i = 0;
-            if (res.success) {
-                res.listData.forEach(element => {
-                    let active = "";
-                    if (i == 0) {
-                        active = "active-list";
-                    }
-                    let html = `<li class="${active} active  cursor-pointer flex items-center space-x-2 text-blue-400  " data-id='${element.id}'>${element.list_name} </li>`;
-                    i++;
-                    $(".default-list").append(html);
-                });
-            } else {
-                console.error(res.massage);
-            }
-        }
-    })
-}
+// function fetchDefaultList() {
+//     $.ajax({
+//         url: "./config/server.php",
+//         type: "POST",
+//         data: { defaultList: true },
+//         success: function (response) {
+//             let res = JSON.parse(response);
+//             let i = 0;
+//             if (res.success) {
+//                 res.listData.forEach(element => {
+//                     let active = "";
+//                     if (i == 0) {
+//                         active = "active-list";
+//                     }
+//                     let html = `<li class="${active} active  cursor-pointer flex items-center space-x-2 text-blue-400  " data-id='${element.id}'>${element.list_name} </li>`;
+//                     i++;
+//                     $(".default-list").append(html);
+//                 });
+//             } else {
+//                 console.error(res.massage);
+//             }
+//         }
+//     })
+// }
 
 $(document).on("click", ".getDefaultList", function () {
     let id = $(this).attr("data-id");
-    alert(id);
     $(".getDefaultList").removeClass("active-list");
     $(this).addClass("active-list");
     fetchdata(id);
+});
+
+$(document).on("click", ".taskImp", function () {
+    id = $(this).data("id");
+    imp = $(this).data("imp");
+    $.ajax({
+        url: "./config/server.php",
+        type: "POST",
+        data: {
+            updateImp: true,
+            id: id,
+            imp: imp
+        },
+        success: function (response) {
+            let res = JSON.parse(response);
+            // console.log(res);
+            if (res.success) {
+                toastr.success(res.massage);
+                if (imp == 0) {
+                    $(".taskImp" + id).removeClass("text-white").addClass("text-yellow-500");
+                } else {
+                    $(".taskImp" + id).addClass("text-white").removeClass("text-yellow-500");
+                }
+
+            }
+        }
+    });
 });
