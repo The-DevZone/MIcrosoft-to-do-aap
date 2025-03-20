@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Navbar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <nav class="bg-white shadow-md p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="#" class="text-2xl font-bold">
+          <span class="text-black">Coding</span>
+          <span class="text-blue-500">Addict</span>
+        </a>
+        <button id="menu-btn" class="text-blue-500 text-2xl md:hidden">
+          &#9776;
+        </button>
+        <ul id="menu" class="hidden md:flex space-x-6 text-gray-700 text-lg">
+          <li><a href="#" class="hover:text-blue-500">Home</a></li>
+          <li><a href="#" class="hover:text-blue-500">About</a></li>
+          <li><a href="#" class="hover:text-blue-500">Projects</a></li>
+          <li><a href="#" class="hover:text-blue-500">Contact</a></li>
+        </ul>
+      </div>
+      <ul
+        id="mobile-menu"
+        class="hidden flex flex-col space-y-4 mt-4 text-gray-700 text-lg md:hidden duration-1000 ease-in-out"
+      >
+        <li><a href="#" class="hover:text-blue-500">Home</a></li>
+        <li><a href="#" class="hover:text-blue-500">About</a></li>
+        <li><a href="#" class="hover:text-blue-500">Projects</a></li>
+        <li><a href="#" class="hover:text-blue-500">Contact</a></li>
+      </ul>
+    </nav>
+
+    <script>
+      const menuBtn = document.getElementById("menu-btn");
+
+      menuBtn.addEventListener("click", () => {
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenu.classList.toggle("hidden");
+      });
+    </script>
+  </body>
+</html>

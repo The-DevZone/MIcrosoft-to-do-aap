@@ -203,11 +203,26 @@ if (isset($_POST['task_submit'])) {
 if (isset($_POST['getData'])) {
   $check_api = 0;
   $returntaskdata["success"] = false;
+
   $where = "";
+  $id = $_POST['id'];
   if (isset($_POST['id'])) {
-    $id = $_POST['id'];
-    $where = "and list_id = '$id'";
+    if ($id == 'Important') {
+
+      // $where = "and list_id = 'Tasks'";
+      $where = "and is_imp = '1'";
+    } else {
+      $where = "and list_id = '$id'";
+    }
   }
+
+  // if (isset($_POST['id'])) {
+  //   if ($_POST['id'] == 'Tasks') {
+  //     $where = "and list_id = '$id'";
+  //   } else {
+  //     $where = "and list_id = '$id'";
+  //   }
+  // }
 
   $result = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]' $where order by  id desc");
   if ($result) {
@@ -366,6 +381,7 @@ if (isset($_POST['updateImp'])) {
   $returndata["success"] = false;
   $id = $_POST['id'];
   $imp = $_POST['imp'];
+  // $is_imp = 0;
   if ($imp == 0) {
     $is_imp = 1;
   } else {

@@ -96,20 +96,23 @@ function renderdata(tasklist) {
     if (tasklist) {
         tasklist.forEach(element => {
 
-            let is_imp = "text-white";
+            let is_imp = "";
             if (element.is_imp == 1) {
                 is_imp = "text-yellow-500";
+            } else {
+                // alert("hello");
+                is_imp = "text-white";
             }
 
             // let starColor = element.star == 1 ? "background-yellow-500" : "text-white";
             taskHtml += `
-              <div class="text-center  overflow-hidden task-option  deletebtn  sidebarmenu" data-id="${element.id}" >
+              <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
                 <div  class="   flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
                   <div class="flex items-center space-x-2"  >
                     <input type="checkbox" class="mr-2"   >
                     <p class="newtask">${element.tasks_name}</p>
                   </div>
-                   <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImp${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
+                   <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
                     <i class="  fa-regular fa-star"> </i>
                     </div>
                     </div>
@@ -125,7 +128,7 @@ function renderdata(tasklist) {
 
 $(document).on("click", ".star-btn", function (e) {
 
-    // let id = $(this).attr("data-id");
+    let id = $(this).attr("data-id");
     e.stopPropagation();
 });
 
@@ -407,8 +410,9 @@ $(document).on("click", ".getDefaultList", function () {
 });
 
 $(document).on("click", ".taskImp", function () {
-    id = $(this).data("id");
-    imp = $(this).data("imp");
+    let id = $(this).attr("data-id");
+    let imp = $(this).attr("data-imp");
+
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -419,16 +423,21 @@ $(document).on("click", ".taskImp", function () {
         },
         success: function (response) {
             let res = JSON.parse(response);
-            // console.log(res);
             if (res.success) {
                 toastr.success(res.massage);
-                if (imp == 0) {
-                    $(".taskImp" + id).removeClass("text-white").addClass("text-yellow-500");
+                if (imp == '0') {
+                    $(".taskImps" + id).attr("data-imp", 1);
+                    $(".taskImps" + id).removeClass("text-white").addClass("text-yellow-500");
                 } else {
-                    $(".taskImp" + id).addClass("text-white").removeClass("text-yellow-500");
+                    let getList = $(".active-list").data("id");
+                    if (getList == "Important") {
+                        $(".removeTask" + id).remove();
+                    }
+                    $(".taskImps" + id).attr("data-imp", 0)
+                    $(".taskImps" + id).addClass("text-white").removeClass("text-yellow-500");
                 }
-
             }
+
         }
     });
 });
