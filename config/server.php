@@ -141,7 +141,7 @@ if (isset($_POST['task_submit'])) {
 
   $check_api = 0;
 
-  $returntaskdata["success"] = false;
+  $returndata["success"] = false;
   $taskerrcount = 0;
 
   if (isset($_POST['taskinput']) && isset($_POST['user_id'])) {
@@ -151,23 +151,23 @@ if (isset($_POST['task_submit'])) {
     $activeListId = $_POST['activeListId'];
 
     if (empty($taskinput)) {
-      $returntaskdata["massage"] = "Task is required.";
+      $returndata["massage"] = "Task is required.";
       $taskerrcount++;
     }
 
     if (empty($user_id)) {
-      $returntaskdata["massage"] = "User id is required.";
+      $returndata["massage"] = "User id is required.";
       $taskerrcount++;
     }
     if ($taskerrcount == 0) {
       $qry = mysqli_query($conn, "select id from users where id = '$user_id'");
       if (mysqli_num_rows($qry) < 1) {
-        $returntaskdata["massage"] = "User id not found";
+        $returndata["massage"] = "User id not found";
         $taskerrcount++;
       }
     }
     if (empty($activeListId)) {
-      $returntaskdata["massage"] = "List id is required.";
+      $returndata["massage"] = "List id is required.";
       $taskerrcount++;
     }
     $where = '';
@@ -186,55 +186,68 @@ if (isset($_POST['task_submit'])) {
             $data[] = $row;
           }
         }
-        $returntaskdata["tasklist"] = $data;
-        $returntaskdata["success"] = true;
-        $returntaskdata["massage"] = "Add task successfully";
+        $returndata["tasklist"] = $data;
+        $returndata["success"] = true;
+        $returndata["massage"] = "Add task successfully";
       } else {
-        $returntaskdata["massage"] = "add task not successfully";
+        $returndata["massage"] = "add task not successfully";
       }
     }
   } else {
-    $returntaskdata["massage"] = "Task input or user id not found";
+    $returndata["massage"] = "Task input or user id not found";
   }
-  echo json_encode($returntaskdata, true);
+  echo json_encode($returndata, true);
 }
 
 // fetching data from database
 if (isset($_POST['getData'])) {
   $check_api = 0;
-  $returntaskdata["success"] = false;
+  $returndata["success"] = false;
 
-  $where = "";
-  $id = $_POST['id'];
-  if (isset($_POST['id'])) {
-    if ($id == 'Important') {
-
-      // $where = "and list_id = 'Tasks'";
-      $where = "and is_imp = '1'";
-    } else {
-      $where = "and list_id = '$id'";
-    }
-  }
-
+  // $where = "";
+  // $id = $_POST['id'];
   // if (isset($_POST['id'])) {
-  //   if ($_POST['id'] == 'Tasks') {
-  //     $where = "and list_id = '$id'";
+  //   if ($id == 'Important') {
+  //     $where = "and is_imp = '1'";
   //   } else {
   //     $where = "and list_id = '$id'";
+
   //   }
   // }
 
+
+  $where = ""; // Initialize an empty string for the WHERE condition.
+
+  if (isset($_POST['id'])) { // Check if 'id' is set in the POST request.
+    $id = $_POST['id'];
+
+    if ($_POST['id'] == 'Important') {
+      // If 'id' is 'Important', set the condition to filter important but not completed tasks.
+      $where = "AND is_imp = '1' AND is_don = '0'";
+    } elseif ($_POST['id'] == 'completed') {
+      // If 'id' is 'completed', set the condition to filter only completed tasks.
+      $where = "AND is_don = '1'";
+    } else {
+      // If 'id' has any other value, filter by list_id and ensure tasks are not completed.
+      $where = "AND list_id = '$id' AND is_don = '0'";
+    }
+  }
+
   $result = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]' $where order by  id desc");
+  $count = mysqli_num_rows($result);
   if ($result) {
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
       $data[] = $row;
     }
-    $returntaskdata["tasklist"] = $data;
-    $returntaskdata["success"] = true;
-    $returntaskdata["massage"] = "Data fetched success fully";
+    $returndata["tasklist"] = $data;
+    $returndata["countTask"] = $count;
+    $returndata["success"] = true;
+    $returndata["massage"] = "Data fetched success fully";
+  } else {
+    $returndata["massage"] = "No data found";
   }
-  echo json_encode($returntaskdata, true);
+  echo json_encode($returndata, true);
 }
 
 // delete task  id 
@@ -305,14 +318,13 @@ if (isset($_POST["getnewlist"])) {
 }
 
 // delete list
-if (isset($_POST['deletelistapi'])) {
+if (isset($_POST['deletelist'])) {
   $check_api = 0;
   $returndata["success"] = false;
   $id = $_POST['id'];
 
   // Validate list ID
-  $query = "SELECT id FROM lists WHERE id = '$id'";
-  $result = mysqli_query($conn, $query);
+  $result = mysqli_query($conn, "SELECT id FROM lists WHERE id = '$id'");
   if (mysqli_num_rows($result) > 0) {
     // List ID is valid, proceed with deletion
     $result = mysqli_query($conn, "delete from lists where id = '$id'");
@@ -381,6 +393,7 @@ if (isset($_POST['updateImp'])) {
   $returndata["success"] = false;
   $id = $_POST['id'];
   $imp = $_POST['imp'];
+  // print_r($imp);die;
   // $is_imp = 0;
   if ($imp == 0) {
     $is_imp = 1;
@@ -397,8 +410,28 @@ if (isset($_POST['updateImp'])) {
   }
   echo json_encode($returndata, true);
 }
+if (isset($_POST['updateDon'])) {
+  $check_api = 0;
+  $returndata["success"] = false;
+  $id = $_POST['id'];
+  $isDon = $_POST['isDon'];
 
-// apifetch error  it should be  always in bottom
+  if ($isDon == 0) {
+    $is_don = 1;
+  } else {
+    $is_don = 0;
+  }
+  $result = mysqli_query($conn, "update tasks set is_don ='$is_don'  WHERE id = '$id'");
+  if ($result) {
+    $returndata["success"] = true;
+    $returndata["massage"] = "Task completed successfully";
+  } else {
+    $returndata["success"] = true;
+    $returndata["massage"] = "Task not completed successfully";
+  }
+  echo json_encode($returndata, true);
+}
+
 if ($check_api == 1) {
   $returndata["success"] = false;
   $returndata["massage"] = "Invalid request Api";

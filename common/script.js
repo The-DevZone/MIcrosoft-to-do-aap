@@ -20,9 +20,11 @@ $(document).ready(function () {
 // toastr end
 $(document).ready(function () {
     fetchlistdata();
-    let activeListId = $(".active-list").data("id");
+    let activeListId = $(".active-list").attr("data-id");
     // console.log(activeListId);
     fetchdata(activeListId);
+    // counter();
+    // getImpCount();
 });
 
 $(document).on("click", "#task-add", function (e) {
@@ -61,15 +63,16 @@ $(document).on("click", "#task-add", function (e) {
 });
 
 // fetch data
-function fetchdata(id = '') {
+function fetchdata(id = '', countTask = '') {
     let request = {
         getData: true,
     }
 
+
     if (id != '') {
         request.id = id;
     }
-
+    // alert(id)
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -77,7 +80,8 @@ function fetchdata(id = '') {
         success: function (response) {
             let arr = JSON.parse(response);
             if (arr.success) {
-                renderdata(arr.tasklist);
+                renderdata(arr.tasklist, arr.countTask);
+                // $(".impCount").text(arr.count);
             }
             else {
                 console.error(arr.massage);
@@ -89,8 +93,10 @@ function fetchdata(id = '') {
     });
 }
 
-function renderdata(tasklist) {
+function renderdata(tasklist, countTask) {
     let displaydata = $("#display-data");
+    let impCount = $(".impCount").attr("data-id");
+    // alert(activeListstatus);
     $(displaydata).html("");
     let taskHtml = '';
     if (tasklist) {
@@ -103,13 +109,21 @@ function renderdata(tasklist) {
                 // alert("hello");
                 is_imp = "text-white";
             }
+            let isDon = "";
+            if (element.is_don == 0) {
+                isDon = "";
+            } else {
+                isDon = "bg-blue-500";
+            }
 
             // let starColor = element.star == 1 ? "background-yellow-500" : "text-white";
             taskHtml += `
               <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
                 <div  class="   flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
                   <div class="flex items-center space-x-2"  >
-                    <input type="checkbox" class="mr-2"   >
+                  <div class="check taskCompleted"  task-don="${element.id}"  don-task="${element.is_don}">
+                    <input type="radio" class="mr-2  ${isDon}" >
+                    </div>
                     <p class="newtask">${element.tasks_name}</p>
                   </div>
                    <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
@@ -121,6 +135,8 @@ function renderdata(tasklist) {
               </div> 
               `;
             $("#display-data").html(taskHtml);
+            $(".impCount").text(countTask);
+
         }
         );
     }
@@ -128,7 +144,12 @@ function renderdata(tasklist) {
 
 $(document).on("click", ".star-btn", function (e) {
 
-    let id = $(this).attr("data-id");
+    // let id = $(this).attr("data-id");
+    e.stopPropagation();
+});
+$(document).on("click", ".check", function (e) {
+
+    // let id = $(this).attr("data-id");
     e.stopPropagation();
 });
 
@@ -156,6 +177,8 @@ $(document).on("contextmenu", '.task-option', function (e) {
     e.preventDefault();
     taskid = $(this).data("id"); // Get the ID of the task to be deleted
     $(".deletetasklist").attr("data-id", taskid);
+    $(".impTask").attr("data-id", taskid);
+
 
     let menu = $("#context-menu");
     let winWidth = $(window).width();
@@ -213,8 +236,6 @@ $("#close_modal").on("click", function () {
 //     // if (temp_list != undefined) {
 
 //     // }
-
-
 //     $.ajax({
 //         url: "./config/server.php",
 //         type: "POST",
@@ -323,10 +344,10 @@ $(document).click(function (event) {
 
 $(document).on("contextmenu", ".contexntRightClick", function (e) {
     e.preventDefault();
-
     listId = $(this).data("id");
     $(".deletelist").attr("data-id", listId);
     $(".renamelist").attr("data-id", listId);
+    // $(".taskCompleted").attr("data-id", listId);
 
     let menu = $(".context-menu-new-list");
     let winWidth = $(window).width();
@@ -354,7 +375,7 @@ $(document).on("click", ".deletelist", function (e) {
     $.ajax({
         url: "./config/server.php",
         type: "POST",
-        data: { deletelistapi: true, id: listId },
+        data: { deletelist: true, id: listId },
         success: function (response) {
             let res = JSON.parse(response)
             if (res.success) {
@@ -409,9 +430,12 @@ $(document).on("click", ".getDefaultList", function () {
     fetchdata(id);
 });
 
-$(document).on("click", ".taskImp", function () {
+let imp
+$(document).on("click", ".taskImp, .impTask", function () {
     let id = $(this).attr("data-id");
+    // alert(id);
     let imp = $(this).attr("data-imp");
+    // let mark = $(this).attr("data-id");
 
     $.ajax({
         url: "./config/server.php",
@@ -425,13 +449,15 @@ $(document).on("click", ".taskImp", function () {
             let res = JSON.parse(response);
             if (res.success) {
                 toastr.success(res.massage);
-                if (imp == '0') {
+                if (imp == "0") {
                     $(".taskImps" + id).attr("data-imp", 1);
                     $(".taskImps" + id).removeClass("text-white").addClass("text-yellow-500");
                 } else {
                     let getList = $(".active-list").data("id");
                     if (getList == "Important") {
-                        $(".removeTask" + id).remove();
+                        setTimeout(() => {
+                            $(".removeTask" + id).remove();
+                        }, 500);
                     }
                     $(".taskImps" + id).attr("data-imp", 0)
                     $(".taskImps" + id).addClass("text-white").removeClass("text-yellow-500");
@@ -441,3 +467,32 @@ $(document).on("click", ".taskImp", function () {
         }
     });
 });
+
+
+
+$(document).on("click", ".taskCompleted", function () {
+    let id = $(this).attr("task-don");
+    let taskDon = $(this).attr("don-task");
+
+    $.ajax({
+        url: "./config/server.php",
+        type: "POST",
+        data: {
+            updateDon: true,
+            id: id,
+            isDon: taskDon
+        },
+        success: function (response) {
+            console.log(response);
+            let res = JSON.parse(response);
+            if (res.success) {
+                toastr.success(res.massage);
+
+                $(".removeTask" + id).remove();
+            }
+        }
+    });
+})
+
+
+
