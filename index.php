@@ -142,25 +142,27 @@ if (!isset($_SESSION['loginid'])) {
         data-id="MyDay">
         <li>
           🌟My Day</li>
-        <div class="text-yellow-500  "></div>
+        <div class="text-yellow-500"></div>
       </div>
       <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList  justify-between"
         data-id="Important">
         <li class="">
           ⭐Important
         </li>
+        <div class="text-yellow-500 impCount" data-imp="Imp"></div>
       </div>
       <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Planned">
         <li>📅Planned
         </li>
-        <div class="text-yellow-500 impCount" data-imp="Planned"></div>
+        <div class="text-yellow-500 impCount" data-imp="Plan"></div>
       </div>
       <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="all">
         <li>📂All
         </li>
         <div class="text-yellow-500 impCount" data-imp="All"></div>
       </div>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="completed">
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList compRemove"
+        data-id="completed">
         📂Completed</li>
       <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Tasks">📂Tasks</li>
     </ul>
@@ -308,6 +310,18 @@ if (!isset($_SESSION['loginid'])) {
         </div>
       </div> -->
     </div>
+    <div class="relative inline-block text-left">
+        <button id="dropdown-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
+            Menu ▼
+        </button>
+        
+        <div id="dropdown-menu" class=" absolute mt-2 w-40 bg-white shadow-md rounded-md">
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Home</a>
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">About</a>
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Services</a>
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Contact</a>
+        </div>
+    </div>
     <!-- display render data -->
 
     <!-- delete modal box -->
@@ -350,7 +364,7 @@ if (!isset($_SESSION['loginid'])) {
     <!-- delete modal box -->
 
     <!-- Add Task Input -->
-    <div class="fixed bottom-2 w-10/12  submitScreenSize " is_open="0">
+    <div class="fixed bottom-2 w-10/12  removecomp" is_open="0">
       <form action="./config/server.php" method="post" id="taskform" class="bg-gray-800 rounded-lg flex items-end  p-2">
         <input type="hidden" name="task_submit" value="1">
         <input type="hidden" name="user_id" value="<?php echo $_SESSION['loginid']; ?>">

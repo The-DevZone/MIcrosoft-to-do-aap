@@ -33,10 +33,19 @@ $(document).on("click", "#task-add", function (e) {
     let errorCount = 0;
     let form = $("#taskform");
     let url = form.attr("action");
-    let activeListId = $(".active-list").data("id");
+    let activeListId = $(".active-list").attr("data-id");
+    // let id = $(".taskImp").attr("data-id");
+    let getList = $(".active-list").data("id");
+
 
     let formData = form.serialize();
     formData += "&activeListId=" + activeListId;
+
+    if (activeListId == "Important") {
+        formData += "&is_imp=1";
+    } else {
+        formData += "&is_imp=0";
+    }
 
     // Validation
     if (task === "") {
@@ -52,8 +61,12 @@ $(document).on("click", "#task-add", function (e) {
             success: function (response) {
                 let arr = JSON.parse(response);
                 if (arr.success) {
+                    toastr.success(arr.massage);
+
                     $("#taskinput").val("").removeClass("border-red-500");
-                    renderdata(arr.tasklist); // Refresh task list after adding
+                    // $(".removecomp").removeClass("hidden");
+                    renderdata(arr.tasklist);
+                    // Refresh task list after adding
                 }
             }
         });
@@ -67,12 +80,11 @@ function fetchdata(id = '', countTask = '') {
     let request = {
         getData: true,
     }
-
-
     if (id != '') {
         request.id = id;
     }
-    // alert(id)
+
+
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -113,7 +125,7 @@ function renderdata(tasklist, countTask) {
             if (element.is_don == 0) {
                 isDon = "";
             } else {
-                isDon = "bg-blue-500";
+                isDon = "bg-blue-500  rounded-full m-1 text-white";
             }
 
             // let starColor = element.star == 1 ? "background-yellow-500" : "text-white";
@@ -122,7 +134,7 @@ function renderdata(tasklist, countTask) {
                 <div  class="   flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
                   <div class="flex items-center space-x-2"  >
                   <div class="check taskCompleted"  task-don="${element.id}"  don-task="${element.is_don}">
-                    <input type="radio" class="mr-2  ${isDon}" >
+                    <input type="checkbox" class="mr-2  ${isDon}"  >
                     </div>
                     <p class="newtask">${element.tasks_name}</p>
                   </div>
@@ -177,7 +189,7 @@ $(document).on("contextmenu", '.task-option', function (e) {
     e.preventDefault();
     taskid = $(this).data("id"); // Get the ID of the task to be deleted
     $(".deletetasklist").attr("data-id", taskid);
-    $(".impTask").attr("data-id", taskid);
+    $(".impTask").attr("data-id");
 
 
     let menu = $("#context-menu");
@@ -391,7 +403,6 @@ $(document).on("click", ".deletelist", function (e) {
     });
 });
 
-
 $("#closemodallist").on("click", function () {
 
     $(".close_modallist").trigger("click");
@@ -425,17 +436,21 @@ $("#closemodallist").on("click", function () {
 
 $(document).on("click", ".getDefaultList", function () {
     let id = $(this).attr("data-id");
+    let activeListId = $(this).data("id");
     $(".getDefaultList").removeClass("active-list");
     $(this).addClass("active-list");
+    if (activeListId !== "completed") {
+        $(".removecomp").removeClass("hidden");
+    }
     fetchdata(id);
 });
 
-let imp
-$(document).on("click", ".taskImp, .impTask", function () {
+// let imp
+$(document).on("click", ".taskImp", function () {
     let id = $(this).attr("data-id");
-    // alert(id);
     let imp = $(this).attr("data-imp");
-    // let mark = $(this).attr("data-id");
+    let getList = $(".active-list").data("id");
+
 
     $.ajax({
         url: "./config/server.php",
@@ -450,10 +465,16 @@ $(document).on("click", ".taskImp, .impTask", function () {
             if (res.success) {
                 toastr.success(res.massage);
                 if (imp == "0") {
+                    // if (getList == "Important") {
+
+                    //     alert("hello");
+
+                    //     $(".taskImps" + id).attr("data-imp", 1);
+                    // }
+                    // $(".taskImps" + id).attr("data-imp", 1);
                     $(".taskImps" + id).attr("data-imp", 1);
                     $(".taskImps" + id).removeClass("text-white").addClass("text-yellow-500");
                 } else {
-                    let getList = $(".active-list").data("id");
                     if (getList == "Important") {
                         setTimeout(() => {
                             $(".removeTask" + id).remove();
@@ -469,11 +490,12 @@ $(document).on("click", ".taskImp, .impTask", function () {
 });
 
 
-
+// task completed check box click 
 $(document).on("click", ".taskCompleted", function () {
     let id = $(this).attr("task-don");
     let taskDon = $(this).attr("don-task");
-
+    // let compId = $(".compToggel").attr("data-id");
+    // alert(compId);
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -487,12 +509,73 @@ $(document).on("click", ".taskCompleted", function () {
             let res = JSON.parse(response);
             if (res.success) {
                 toastr.success(res.massage);
+                if (compId == "dropCompleted") {
+
+
+                }
 
                 $(".removeTask" + id).remove();
+
             }
         }
     });
 })
 
+// remove complete task submit input field
+$(document).on("click", ".compRemove", function () {
+    let activeListId = $(".active-list").attr("data-id");
+    if (activeListId === "completed") {
+        $(".removecomp").addClass("hidden");
+    }
+});
+
+
+$("#dropdown-btn").click(function () {
+    $("#dropdown-menu").toggleClass("hidden");
+});
+
+// $(document).on("click", ".compToggel", function () {
+//     let getId = $(this).attr("data-id");
+//     $(".dropTasks").toggle("hidden");
+// });
+
+
+
+
+// $(document).on("click", ".taskCompleted, .taskImp", function () {
+//     let id = $(this).attr("data-id") || $(this).attr("task-don");
+//     let type = $(this).hasClass("taskCompleted") ? "updateDon" : "updateImp";
+//     let value = $(this).attr("data-imp") || $(this).attr("don-task");
+
+//     $.ajax({
+//         url: "./config/server.php",
+//         type: "POST",
+//         data: {
+//             action: type,
+//             id: id,
+//             value: value
+//         },
+//         success: function (response) {
+//             let res = JSON.parse(response);
+//             if (res.success) {
+//                 toastr.success(res.message);
+
+//                 if (type === "updateDon") {
+//                     $(".removeTask" + id).remove();
+//                 } else if (type === "updateImp") {
+//                     if (value == "0") {
+//                         $(".taskImps" + id).attr("data-imp", 1).removeClass("text-white").addClass("text-yellow-500");
+//                     } else {
+//                         let getList = $(".active-list").data("id");
+//                         if (getList == "Important") {
+//                             setTimeout(() => { $(".removeTask" + id).remove(); }, 500);
+//                         }
+//                         $(".taskImps" + id).attr("data-imp", 0).addClass("text-white").removeClass("text-yellow-500");
+//                     }
+//                 }
+//             }
+//         }
+//     });
+// });
 
 

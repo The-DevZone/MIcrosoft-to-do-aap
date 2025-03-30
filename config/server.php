@@ -170,16 +170,15 @@ if (isset($_POST['task_submit'])) {
       $returndata["massage"] = "List id is required.";
       $taskerrcount++;
     }
-    $where = '';
-    if ($activeListId == 'Tasks') {
-      $where = "and list_id = '$activeListId'";
-    }
-
+    $isimp = $_POST["is_imp"];
+    // if (empty($isimp)) {
+    //   $isimp = 0;
+    // }
     if ($taskerrcount == 0) {
-      $qry = "insert into tasks (tasks_name , list_id ,created_by , updated_by) values ('$taskinput' , '$activeListId' , '$user_id' , '$user_id')";
+      $qry = "insert into tasks (tasks_name,list_id , is_imp ,created_by , updated_by) values ('$taskinput' , '$activeListId' ,'$isimp', '$user_id' , '$user_id')";
       $result = mysqli_query($conn, $qry);
       if ($result) {
-        $run = mysqli_query($conn, "select * from  tasks where created_by = '$user_id' and list_id = '$activeListId' $where  order by id desc");
+        $run = mysqli_query($conn, "select * from  tasks where created_by = '$user_id' and   list_id = '$activeListId'   order by id desc");
         if ($run) {
           $data = [];
           while ($row = mysqli_fetch_assoc($run)) {
@@ -223,13 +222,13 @@ if (isset($_POST['getData'])) {
 
     if ($_POST['id'] == 'Important') {
       // If 'id' is 'Important', set the condition to filter important but not completed tasks.
-      $where = "AND is_imp = '1' AND is_don = '0'";
-    } elseif ($_POST['id'] == 'completed') {
-      // If 'id' is 'completed', set the condition to filter only completed tasks.
+      $where = "AND is_imp = '1' ";
+    } elseif (in_array($id,  ['completed', 'dropCompleted'])) {
+      // If 'id' is 'completed' or 'dropCompleted', filter only completed tasks.
       $where = "AND is_don = '1'";
     } else {
       // If 'id' has any other value, filter by list_id and ensure tasks are not completed.
-      $where = "AND list_id = '$id' AND is_don = '0'";
+      $where = "AND list_id = '$id' ";
     }
   }
 
@@ -368,6 +367,23 @@ if (isset($_POST['listrename'])) {
   echo json_encode($returndata, true);
 }
 
+// PHP Code (server.php)
+// if (isset($_POST['action'])) {
+//   $check_api = 0;
+//   $id = $_POST['id'];
+//   $value = $_POST['value'];
+//   $column = ($_POST['action'] == 'updateImp') ? 'is_imp' : 'is_don';
+//   $newValue = ($value == 0) ? 1 : 0;
+
+//   $result = mysqli_query($conn, "UPDATE tasks SET $column = '$newValue' WHERE id = '$id'");
+
+//   $response = [
+//     "success" => $result ? true : false,
+//     "message" => $result ? (($_POST['action'] == 'updateImp') ? "Task marked as important successfully" : "Task completed successfully") : "Failed to update task"
+//   ];
+//   echo json_encode($response);
+// }
+
 if (isset($_POST['defaultList'])) {
   $check_api = 0;
   $returndata["success"] = false;
@@ -393,14 +409,12 @@ if (isset($_POST['updateImp'])) {
   $returndata["success"] = false;
   $id = $_POST['id'];
   $imp = $_POST['imp'];
-  // print_r($imp);die;
-  // $is_imp = 0;
   if ($imp == 0) {
     $is_imp = 1;
   } else {
     $is_imp = 0;
   }
-  $result = mysqli_query($conn, "update tasks set is_imp ='$is_imp'  WHERE id = '$id'");
+  $result = mysqli_query($conn, query: "update tasks set is_imp ='$is_imp'  WHERE id = '$id'");
   if ($result) {
     $returndata["success"] = true;
     $returndata["massage"] = "Task add Important successfully";
@@ -431,6 +445,8 @@ if (isset($_POST['updateDon'])) {
   }
   echo json_encode($returndata, true);
 }
+
+
 
 if ($check_api == 1) {
   $returndata["success"] = false;
