@@ -215,20 +215,20 @@ if (isset($_POST['getData'])) {
   // }
 
 
-  $where = ""; // Initialize an empty string for the WHERE condition.
+  $where = "";
 
-  if (isset($_POST['id'])) { // Check if 'id' is set in the POST request.
+  if (isset($_POST['id'])) {
     $id = $_POST['id'];
 
     if ($_POST['id'] == 'Important') {
       // If 'id' is 'Important', set the condition to filter important but not completed tasks.
-      $where = "AND is_imp = '1' ";
-    } elseif (in_array($id,  ['completed', 'dropCompleted'])) {
+      $where = "AND is_imp = '1' AND is_don = '0'";
+    } elseif (in_array($id, ['completed', 'menuComp'])) {
       // If 'id' is 'completed' or 'dropCompleted', filter only completed tasks.
       $where = "AND is_don = '1'";
     } else {
       // If 'id' has any other value, filter by list_id and ensure tasks are not completed.
-      $where = "AND list_id = '$id' ";
+      $where = "AND list_id = '$id'AND is_don = '0'";
     }
   }
 

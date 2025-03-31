@@ -131,7 +131,7 @@ function renderdata(tasklist, countTask) {
             // let starColor = element.star == 1 ? "background-yellow-500" : "text-white";
             taskHtml += `
               <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
-                <div  class="   flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
+                <div  class="flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
                   <div class="flex items-center space-x-2"  >
                   <div class="check taskCompleted"  task-don="${element.id}"  don-task="${element.is_don}">
                     <input type="checkbox" class="mr-2  ${isDon}"  >
@@ -147,8 +147,8 @@ function renderdata(tasklist, countTask) {
               </div> 
               `;
             $("#display-data").html(taskHtml);
+            $("#dropdown-menu").html(taskHtml);
             $(".impCount").text(countTask);
-
         }
         );
     }
@@ -494,8 +494,8 @@ $(document).on("click", ".taskImp", function () {
 $(document).on("click", ".taskCompleted", function () {
     let id = $(this).attr("task-don");
     let taskDon = $(this).attr("don-task");
-    // let compId = $(".compToggel").attr("data-id");
-    // alert(compId);
+    let MenuId = $("#dropdown-menu").attr("data-id");
+
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -509,13 +509,12 @@ $(document).on("click", ".taskCompleted", function () {
             let res = JSON.parse(response);
             if (res.success) {
                 toastr.success(res.massage);
-                if (compId == "dropCompleted") {
-
-
+                if (MenuId == "menuComp") {
+                    // Toggle task status
+                    taskDon = taskDon == "1" ? "0" : "1"; 
+                    
                 }
-
                 $(".removeTask" + id).remove();
-
             }
         }
     });
@@ -533,13 +532,6 @@ $(document).on("click", ".compRemove", function () {
 $("#dropdown-btn").click(function () {
     $("#dropdown-menu").toggleClass("hidden");
 });
-
-// $(document).on("click", ".compToggel", function () {
-//     let getId = $(this).attr("data-id");
-//     $(".dropTasks").toggle("hidden");
-// });
-
-
 
 
 // $(document).on("click", ".taskCompleted, .taskImp", function () {

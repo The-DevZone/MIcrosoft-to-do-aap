@@ -310,17 +310,14 @@ if (!isset($_SESSION['loginid'])) {
         </div>
       </div> -->
     </div>
-    <div class="relative inline-block text-left">
-        <button id="dropdown-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
-            Menu ▼
-        </button>
-        
-        <div id="dropdown-menu" class=" absolute mt-2 w-40 bg-white shadow-md rounded-md">
-            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Home</a>
-            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">About</a>
-            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Services</a>
-            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Contact</a>
-        </div>
+    <div class="w-full">
+      <button id="dropdown-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
+        completed ▼
+      </button>
+
+      <div id="dropdown-menu" class="" data-id="menuComp" task-Menu="0" >
+        <!-- content -->
+      </div>
     </div>
     <!-- display render data -->
 
