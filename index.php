@@ -144,7 +144,7 @@ if (!isset($_SESSION['loginid'])) {
           🌟My Day</li>
         <div class="text-yellow-500"></div>
       </div>
-      <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList  justify-between"
+      <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList removeComplete  justify-between"
         data-id="Important">
         <li class="">
           ⭐Important
@@ -161,7 +161,7 @@ if (!isset($_SESSION['loginid'])) {
         </li>
         <div class="text-yellow-500 impCount" data-imp="All"></div>
       </div>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList compRemove"
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList "
         data-id="completed">
         📂Completed</li>
       <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Tasks">📂Tasks</li>
@@ -310,14 +310,16 @@ if (!isset($_SESSION['loginid'])) {
         </div>
       </div> -->
     </div>
-    <div class="w-full">
+    <div class="w-full compHide">
       <button id="dropdown-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
-        completed ▼
+        <span class=" arrowDown hidden">&#8595;</span>
+        <span class=" arrowRight hidden">&#8594;</span>
+        completed
+        <span class="countComp">0</span>
       </button>
-
-      <div id="dropdown-menu" class="" data-id="menuComp" task-Menu="0" >
-        <!-- content -->
-      </div>
+      <div id="CompTasks"
+        class=""
+        data-id="menuComp" tag="1"> </div>
     </div>
     <!-- display render data -->
 

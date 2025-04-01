@@ -203,38 +203,33 @@ if (isset($_POST['getData'])) {
   $check_api = 0;
   $returndata["success"] = false;
 
-  // $where = "";
-  // $id = $_POST['id'];
-  // if (isset($_POST['id'])) {
-  //   if ($id == 'Important') {
-  //     $where = "and is_imp = '1'";
-  //   } else {
-  //     $where = "and list_id = '$id'";
-
-  //   }
-  // }
-
-
   $where = "";
 
   if (isset($_POST['id'])) {
     $id = $_POST['id'];
-
     if ($_POST['id'] == 'Important') {
       // If 'id' is 'Important', set the condition to filter important but not completed tasks.
-      $where = "AND is_imp = '1' AND is_don = '0'";
-    } elseif (in_array($id, ['completed', 'menuComp'])) {
+      $where = "AND is_imp = '1' ";
+    } elseif ($id == "completed") {
       // If 'id' is 'completed' or 'dropCompleted', filter only completed tasks.
       $where = "AND is_don = '1'";
     } else {
       // If 'id' has any other value, filter by list_id and ensure tasks are not completed.
-      $where = "AND list_id = '$id'AND is_don = '0'";
+      $where = "AND list_id = '$id'";
     }
   }
 
-  $result = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]' $where order by  id desc");
-  $count = mysqli_num_rows($result);
+  $returndata["countTaskComp"] = 0;
+  // $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]'  order by id desc");
+  // if ($qry) {
+  //   $returndata["countTaskComp"] = mysqli_num_rows($qry);
+  // }
+  $result = mysqli_query($conn, "SELECT * FROM tasks WHERE created_by = '$_SESSION[loginid]' $where ORDER BY id DESC");
+  // print_r($result);
+  // die;
+  // $count = mysqli_num_rows($result);
   if ($result) {
+
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
       $data[] = $row;
@@ -435,13 +430,28 @@ if (isset($_POST['updateDon'])) {
   } else {
     $is_don = 0;
   }
+  $returndata["countTaskComp"] = 0;
+
   $result = mysqli_query($conn, "update tasks set is_don ='$is_don'  WHERE id = '$id'");
+
   if ($result) {
-    $returndata["success"] = true;
-    $returndata["massage"] = "Task completed successfully";
-  } else {
-    $returndata["success"] = true;
-    $returndata["massage"] = "Task not completed successfully";
+    $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]' and is_don = '1' order by id desc");
+    if ($qry) {
+      $returndata["countTaskComp"] = mysqli_num_rows($qry);
+    }
+    $data = [];
+    if ($qry) {
+      while ($row = mysqli_fetch_assoc($qry)) {
+        $data[] = $row;
+      }
+
+      $returndata["success"] = true;
+      $returndata["complete"] = $data;
+      $returndata["massage"] = "Task completed successfully";
+    } else {
+      $returndata["success"] = true;
+      $returndata["massage"] = "Task not completed successfully";
+    }
   }
   echo json_encode($returndata, true);
 }

@@ -94,6 +94,12 @@ function fetchdata(id = '', countTask = '') {
             if (arr.success) {
                 renderdata(arr.tasklist, arr.countTask);
                 // $(".impCount").text(arr.count);
+                if (arr.countTaskComp > 0) {
+                    $(".compHide").removeClass("hidden");
+
+                } else {
+                    $(".compHide").addClass("hidden");
+                }
             }
             else {
                 console.error(arr.massage);
@@ -108,17 +114,19 @@ function fetchdata(id = '', countTask = '') {
 function renderdata(tasklist, countTask) {
     let displaydata = $("#display-data");
     let impCount = $(".impCount").attr("data-id");
-    // alert(activeListstatus);
+    let taskHtmlTwo = '';
     $(displaydata).html("");
+    $(".countComp").html("");
     let taskHtml = '';
-    if (tasklist) {
-        tasklist.forEach(element => {
+    let count = 0;
 
+    // let taskCounr = ""
+    if (tasklist) {
+        tasklist.forEach((element, count) => {
             let is_imp = "";
             if (element.is_imp == 1) {
                 is_imp = "text-yellow-500";
             } else {
-                // alert("hello");
                 is_imp = "text-white";
             }
             let isDon = "";
@@ -128,29 +136,59 @@ function renderdata(tasklist, countTask) {
                 isDon = "bg-blue-500  rounded-full m-1 text-white";
             }
 
-            // let starColor = element.star == 1 ? "background-yellow-500" : "text-white";
-            taskHtml += `
-              <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
-                <div  class="flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
-                  <div class="flex items-center space-x-2"  >
-                  <div class="check taskCompleted"  task-don="${element.id}"  don-task="${element.is_don}">
-                    <input type="checkbox" class="mr-2  ${isDon}"  >
-                    </div>
-                    <p class="newtask">${element.tasks_name}</p>
-                  </div>
-                   <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
-                    <i class="  fa-regular fa-star"> </i>
-                    </div>
-                    </div>
-                  </div>
-                </div>
-              </div> 
+            if (element.is_don == 1) {
+                taskHtmlTwo += `
+                                <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
+                                  <div  class="flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
+                                    <div class="flex items-center space-x-2">
+                                    <div class="check taskCompleted"  data-id="${element.id}" don-task="${element.is_don}">
+                                      <input type="checkbox" class="mr-2  ${isDon}"  >
+                                      </div>
+                                      <p class="newtask">${element.tasks_name}</p>
+                                    </div>
+                                     <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
+                                      <i class="  fa-regular fa-star"> </i>
+                                      </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>       
+                                `;
+                count++
+                $(".countComp").append(count);
+                // console.log(countComp);
+                // $("#display-data").html(taskHtml);
+                $("#CompTasks").html(taskHtmlTwo);
+                // $(".impCount").text(countTask);
+            } else {
+                // console.log("else");
+                taskHtml += `
+                             <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
+                               <div  class="flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
+                                 <div class="flex items-center space-x-2"  >
+                                 <div class="check taskCompleted"  data-id="${element.id}"  don-task="${element.is_don}">
+                                   <input type="checkbox" class="mr-2  ${isDon}"  >
+                                   </div>
+                                   <p class="newtask">${element.tasks_name}</p>
+                                 </div>
+                                  <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
+                                   <i class="  fa-regular fa-star"> </i>
+                                   </div>
+                                   </div>
+                                 </div>
+                               </div>
+                             </div> 
               `;
-            $("#display-data").html(taskHtml);
-            $("#dropdown-menu").html(taskHtml);
-            $(".impCount").text(countTask);
+                $("#display-data").html(taskHtml);
+                // $("#CompTasks").html(taskHtml);
+                // $(".impCount").text(countTask);
+            }
+
+
         }
         );
+    } else {
+        console.log("no data");
     }
 }
 
@@ -442,6 +480,14 @@ $(document).on("click", ".getDefaultList", function () {
     if (activeListId !== "completed") {
         $(".removecomp").removeClass("hidden");
     }
+    if (activeListId === "completed") {
+        $(".removecomp").addClass("hidden");
+    } else if (activeListId === "Important" || activeListId === "Planned" || activeListId === "Planned" || activeListId === "all") {
+        // alert("hello");
+        $(".compHide").addClass("hidden");
+    } else if (activeListId !== "Important") {
+        $(".compHide").removeClass("hidden");
+    }
     fetchdata(id);
 });
 
@@ -465,13 +511,7 @@ $(document).on("click", ".taskImp", function () {
             if (res.success) {
                 toastr.success(res.massage);
                 if (imp == "0") {
-                    // if (getList == "Important") {
 
-                    //     alert("hello");
-
-                    //     $(".taskImps" + id).attr("data-imp", 1);
-                    // }
-                    // $(".taskImps" + id).attr("data-imp", 1);
                     $(".taskImps" + id).attr("data-imp", 1);
                     $(".taskImps" + id).removeClass("text-white").addClass("text-yellow-500");
                 } else {
@@ -489,13 +529,11 @@ $(document).on("click", ".taskImp", function () {
     });
 });
 
-
 // task completed check box click 
 $(document).on("click", ".taskCompleted", function () {
-    let id = $(this).attr("task-don");
+    let id = $(this).attr("data-id");
     let taskDon = $(this).attr("don-task");
-    let MenuId = $("#dropdown-menu").attr("data-id");
-
+    // alert(id);
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -505,37 +543,31 @@ $(document).on("click", ".taskCompleted", function () {
             isDon: taskDon
         },
         success: function (response) {
-            console.log(response);
             let res = JSON.parse(response);
+            console.log(res);
             if (res.success) {
                 toastr.success(res.massage);
-                if (MenuId == "menuComp") {
-                    // Toggle task status
-                    taskDon = taskDon == "1" ? "0" : "1"; 
-                    
-                }
                 $(".removeTask" + id).remove();
+                renderdata(res.complete);
+                if (res.countTaskComp > 0) {
+                    $(".compHide").removeClass("hidden");
+                } else {
+                    $(".compHide").addClass("hidden");
+                }
+
+
             }
         }
     });
 })
 
-// remove complete task submit input field
-$(document).on("click", ".compRemove", function () {
-    let activeListId = $(".active-list").attr("data-id");
-    if (activeListId === "completed") {
-        $(".removecomp").addClass("hidden");
-    }
-});
-
-
 $("#dropdown-btn").click(function () {
-    $("#dropdown-menu").toggleClass("hidden");
+    $("#CompTasks").toggleClass("hidden");
 });
 
 
 // $(document).on("click", ".taskCompleted, .taskImp", function () {
-//     let id = $(this).attr("data-id") || $(this).attr("task-don");
+//     let id = $(this).attr("data-id") || $(this).attr("data-id");
 //     let type = $(this).hasClass("taskCompleted") ? "updateDon" : "updateImp";
 //     let value = $(this).attr("data-imp") || $(this).attr("don-task");
 
