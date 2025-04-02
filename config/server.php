@@ -225,17 +225,22 @@ if (isset($_POST['getData'])) {
   //   $returndata["countTaskComp"] = mysqli_num_rows($qry);
   // }
   $result = mysqli_query($conn, "SELECT * FROM tasks WHERE created_by = '$_SESSION[loginid]' $where ORDER BY id DESC");
+  $returndata["countTaskComp"] = mysqli_num_rows($result);
+  // print_r($returndata["countTaskComp"]);
+  // die;
   // print_r($result);
   // die;
   // $count = mysqli_num_rows($result);
   if ($result) {
+
+
 
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
       $data[] = $row;
     }
     $returndata["tasklist"] = $data;
-    $returndata["countTask"] = $count;
+    // $returndata["countTask"] = $count;
     $returndata["success"] = true;
     $returndata["massage"] = "Data fetched success fully";
   } else {
@@ -435,10 +440,9 @@ if (isset($_POST['updateDon'])) {
   $result = mysqli_query($conn, "update tasks set is_don ='$is_don'  WHERE id = '$id'");
 
   if ($result) {
-    $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]' and is_don = '1' order by id desc");
-    if ($qry) {
-      $returndata["countTaskComp"] = mysqli_num_rows($qry);
-    }
+    $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]'  ");
+    $returndata["countTaskComp"] = mysqli_num_rows($qry);
+
     $data = [];
     if ($qry) {
       while ($row = mysqli_fetch_assoc($qry)) {

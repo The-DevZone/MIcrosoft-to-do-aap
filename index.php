@@ -144,7 +144,8 @@ if (!isset($_SESSION['loginid'])) {
           🌟My Day</li>
         <div class="text-yellow-500"></div>
       </div>
-      <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList removeComplete  justify-between"
+      <div
+        class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList removeComplete  justify-between"
         data-id="Important">
         <li class="">
           ⭐Important
@@ -161,8 +162,7 @@ if (!isset($_SESSION['loginid'])) {
         </li>
         <div class="text-yellow-500 impCount" data-imp="All"></div>
       </div>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList "
-        data-id="completed">
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList " data-id="completed">
         📂Completed</li>
       <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Tasks">📂Tasks</li>
     </ul>
@@ -317,9 +317,7 @@ if (!isset($_SESSION['loginid'])) {
         completed
         <span class="countComp">0</span>
       </button>
-      <div id="CompTasks"
-        class=""
-        data-id="menuComp" tag="1"> </div>
+      <div id="CompTasks" class="" data-id="menuComp" tag="1"> </div>
     </div>
     <!-- display render data -->
 
@@ -426,6 +424,9 @@ if (!isset($_SESSION['loginid'])) {
     </div>
     <!-- Context Menu -->
   </main>
+
+
+
 
   <!-- Sidebar -->
   <div class="sidebar h-screen w-1/5  fixed top-0 right-0 hidden ">

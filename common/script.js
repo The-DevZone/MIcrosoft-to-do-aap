@@ -76,15 +76,13 @@ $(document).on("click", "#task-add", function (e) {
 });
 
 // fetch data
-function fetchdata(id = '', countTask = '') {
+function fetchdata(id = '') {
     let request = {
         getData: true,
     }
     if (id != '') {
         request.id = id;
     }
-
-
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -92,13 +90,13 @@ function fetchdata(id = '', countTask = '') {
         success: function (response) {
             let arr = JSON.parse(response);
             if (arr.success) {
-                renderdata(arr.tasklist, arr.countTask);
+                renderdata(arr.tasklist);
                 // $(".impCount").text(arr.count);
-                if (arr.countTaskComp > 0) {
-                    $(".compHide").removeClass("hidden");
-
-                } else {
+                if (arr.countTaskComp < 0) {
+                    console.log(arr.countTaskComp);
                     $(".compHide").addClass("hidden");
+                } else {
+                    $(".compHide").removeClass("hidden");
                 }
             }
             else {
@@ -115,14 +113,15 @@ function renderdata(tasklist, countTask) {
     let displaydata = $("#display-data");
     let impCount = $(".impCount").attr("data-id");
     let taskHtmlTwo = '';
-    $(displaydata).html("");
-    $(".countComp").html("");
+    // $(displaydata).html("");
     let taskHtml = '';
     let count = 0;
 
     // let taskCounr = ""
     if (tasklist) {
         tasklist.forEach((element, count) => {
+            $(".countComp").html("");
+
             let is_imp = "";
             if (element.is_imp == 1) {
                 is_imp = "text-yellow-500";
@@ -183,8 +182,6 @@ function renderdata(tasklist, countTask) {
                 // $("#CompTasks").html(taskHtml);
                 // $(".impCount").text(countTask);
             }
-
-
         }
         );
     } else {
@@ -278,7 +275,6 @@ $("#close_modal").on("click", function () {
 // sidebarlistadd
 // $(document).on("click", "#newList", function (e) {
 //     e.preventDefault();
-//     // alert("new list");
 //     let listname = "Untitled list";
 //     // let temp_list = "untitled list";
 //     // let list_no = 1;
@@ -356,7 +352,6 @@ let listId = null;
 $(document).click(function (event) {
     if (!$(event.target).closest(".listInputActive , .context-menu-new-list").length) {
         let activeInput = $(".activeInput").data("id");  // html ma ha ya id input tag ma h 
-        // alert(activeInput);
         $(".listInput").addClass("hidden");
         $(".listSpan").removeClass("hidden");
         $(".listInput" + activeInput).focus().select();
@@ -367,7 +362,6 @@ $(document).click(function (event) {
 
 // $(document).on("click", ".renamelist", function () {
 //     let listId = $(this).data("id");
-//     alert(listId);
 //     $(".activeInput").attr("data-id", listId);
 //     $(".listInput" + listId).removeClass('hidden');
 //     $(".listSpan" + listId).addClass('hidden');
@@ -381,7 +375,6 @@ $(document).click(function (event) {
 //         success: function (response) {
 //             let res = JSON.parse(response)
 //             // console.log(res);
-//             // alert(res.massage);
 //             if (res.success) {
 //                 toastr.success(res.massage);
 //                 // getnewlist();
@@ -483,7 +476,6 @@ $(document).on("click", ".getDefaultList", function () {
     if (activeListId === "completed") {
         $(".removecomp").addClass("hidden");
     } else if (activeListId === "Important" || activeListId === "Planned" || activeListId === "Planned" || activeListId === "all") {
-        // alert("hello");
         $(".compHide").addClass("hidden");
     } else if (activeListId !== "Important") {
         $(".compHide").removeClass("hidden");
@@ -511,7 +503,6 @@ $(document).on("click", ".taskImp", function () {
             if (res.success) {
                 toastr.success(res.massage);
                 if (imp == "0") {
-
                     $(".taskImps" + id).attr("data-imp", 1);
                     $(".taskImps" + id).removeClass("text-white").addClass("text-yellow-500");
                 } else {
@@ -533,7 +524,7 @@ $(document).on("click", ".taskImp", function () {
 $(document).on("click", ".taskCompleted", function () {
     let id = $(this).attr("data-id");
     let taskDon = $(this).attr("don-task");
-    // alert(id);
+    // alert
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -544,18 +535,18 @@ $(document).on("click", ".taskCompleted", function () {
         },
         success: function (response) {
             let res = JSON.parse(response);
-            console.log(res);
+            // console.log(res);
             if (res.success) {
                 toastr.success(res.massage);
                 $(".removeTask" + id).remove();
+
                 renderdata(res.complete);
+
                 if (res.countTaskComp > 0) {
                     $(".compHide").removeClass("hidden");
                 } else {
                     $(".compHide").addClass("hidden");
                 }
-
-
             }
         }
     });
@@ -601,5 +592,4 @@ $("#dropdown-btn").click(function () {
 //         }
 //     });
 // });
-
 
