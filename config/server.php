@@ -437,10 +437,10 @@ if (isset($_POST['updateDon'])) {
   }
   $returndata["countTaskComp"] = 0;
 
-  $result = mysqli_query($conn, "update tasks set is_don ='$is_don'  WHERE id = '$id'");
+  $result = mysqli_query($conn, "update tasks set is_don ='$is_don'WHERE id = '$id'");
 
   if ($result) {
-    $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]'  ");
+    $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]'");
     $returndata["countTaskComp"] = mysqli_num_rows($qry);
 
     $data = [];
@@ -467,4 +467,22 @@ if ($check_api == 1) {
   $returndata["massage"] = "Invalid request Api";
   echo json_encode($returndata, true);
 }
+?>
+
+<?php
+require_once "PHPExcel.php";
+
+$objPHPExcel = new PHPExcel();
+// ... Excel content generate karo ...
+$objPHPExcel->setActiveSheetIndex(0);
+
+// Headers for download
+header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+header('Content-Disposition: attachment;filename="Table_Summary.xlsx"');
+header('Cache-Control: max-age=0');
+
+// Write file to output
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+$objWriter->save('php://output');
+exit;
 ?>

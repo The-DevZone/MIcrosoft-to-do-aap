@@ -145,6 +145,7 @@ function renderdata(tasklist, countTask) {
                                       </div>
                                       <p class="newtask">${element.tasks_name}</p>
                                     </div>
+                                    <div class="export-to-excel cursor-pointer"> down </div>
                                      <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
                                       <i class="  fa-regular fa-star"> </i>
                                       </div>
@@ -552,10 +553,14 @@ $(document).on("click", ".taskCompleted", function () {
     });
 })
 
+
 $("#dropdown-btn").click(function () {
     $("#CompTasks").toggleClass("hidden");
 });
 
+document.getElementById("export-to-excel").addEventListener("click", function () {
+    window.location.href = "table_create_excel.php?action=exportToExcel";
+});
 
 // $(document).on("click", ".taskCompleted, .taskImp", function () {
 //     let id = $(this).attr("data-id") || $(this).attr("data-id");
