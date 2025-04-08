@@ -312,10 +312,10 @@ if (!isset($_SESSION['loginid'])) {
     </div>
     <div class="w-full compHide">
       <button id="dropdown-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
-        <span class=" arrowDown hidden">&#8595;</span>
-        <span class=" arrowRight hidden">&#8594;</span>
+        <span class=" arrowDown ">&#8595;</span>
+        <span class=" arrowRight hidden ">&#8594;</span>
         completed
-        <span class="countComp">0</span>
+        <span class="countComp"></span>
       </button>
       <div id="CompTasks" class="" data-id="menuComp" tag="1"> </div>
     </div>

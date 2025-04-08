@@ -202,39 +202,24 @@ if (isset($_POST['task_submit'])) {
 if (isset($_POST['getData'])) {
   $check_api = 0;
   $returndata["success"] = false;
+  $id = $_POST['id'];
 
   $where = "";
 
   if (isset($_POST['id'])) {
-    $id = $_POST['id'];
     if ($_POST['id'] == 'Important') {
-      // If 'id' is 'Important', set the condition to filter important but not completed tasks.
-      $where = "AND is_imp = '1' ";
-    } elseif ($id == "completed") {
-      // If 'id' is 'completed' or 'dropCompleted', filter only completed tasks.
+      $where = "AND is_imp = '1' and is_don = '0'";
+    } elseif ($_POST['id'] == "completed") {
       $where = "AND is_don = '1'";
     } else {
-      // If 'id' has any other value, filter by list_id and ensure tasks are not completed.
       $where = "AND list_id = '$id'";
     }
   }
 
-  $returndata["countTaskComp"] = 0;
-  // $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]'  order by id desc");
-  // if ($qry) {
-  //   $returndata["countTaskComp"] = mysqli_num_rows($qry);
-  // }
+
   $result = mysqli_query($conn, "SELECT * FROM tasks WHERE created_by = '$_SESSION[loginid]' $where ORDER BY id DESC");
-  $returndata["countTaskComp"] = mysqli_num_rows($result);
-  // print_r($returndata["countTaskComp"]);
-  // die;
-  // print_r($result);
-  // die;
-  // $count = mysqli_num_rows($result);
+
   if ($result) {
-
-
-
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
       $data[] = $row;
@@ -437,26 +422,26 @@ if (isset($_POST['updateDon'])) {
   }
   $returndata["countTaskComp"] = 0;
 
-  $result = mysqli_query($conn, "update tasks set is_don ='$is_don'WHERE id = '$id'");
+  $result = mysqli_query($conn, "update tasks set is_don ='$is_don' where id = '$id'");
 
   if ($result) {
     $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]'");
-    $returndata["countTaskComp"] = mysqli_num_rows($qry);
+    // $returndata["countTaskComp"] = mysqli_num_rows($qry);
 
     $data = [];
-    if ($qry) {
-      while ($row = mysqli_fetch_assoc($qry)) {
-        $data[] = $row;
-      }
-
-      $returndata["success"] = true;
-      $returndata["complete"] = $data;
-      $returndata["massage"] = "Task completed successfully";
-    } else {
-      $returndata["success"] = true;
-      $returndata["massage"] = "Task not completed successfully";
+    // if ($qry) {
+    while ($row = mysqli_fetch_assoc($qry)) {
+      $data[] = $row;
     }
+
+    $returndata["success"] = true;
+    $returndata["complete"] = $data;
+    $returndata["massage"] = "Task completed successfully";
+  } else {
+    $returndata["success"] = true;
+    $returndata["massage"] = "Task not completed successfully";
   }
+  // }
   echo json_encode($returndata, true);
 }
 
@@ -467,22 +452,4 @@ if ($check_api == 1) {
   $returndata["massage"] = "Invalid request Api";
   echo json_encode($returndata, true);
 }
-?>
-
-<?php
-require_once "PHPExcel.php";
-
-$objPHPExcel = new PHPExcel();
-// ... Excel content generate karo ...
-$objPHPExcel->setActiveSheetIndex(0);
-
-// Headers for download
-header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="Table_Summary.xlsx"');
-header('Cache-Control: max-age=0');
-
-// Write file to output
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-$objWriter->save('php://output');
-exit;
 ?>

@@ -91,13 +91,6 @@ function fetchdata(id = '') {
             let arr = JSON.parse(response);
             if (arr.success) {
                 renderdata(arr.tasklist);
-                // $(".impCount").text(arr.count);
-                if (arr.countTaskComp < 0) {
-                    console.log(arr.countTaskComp);
-                    $(".compHide").addClass("hidden");
-                } else {
-                    $(".compHide").removeClass("hidden");
-                }
             }
             else {
                 console.error(arr.massage);
@@ -109,60 +102,28 @@ function fetchdata(id = '') {
     });
 }
 
-function renderdata(tasklist, countTask) {
-    let displaydata = $("#display-data");
-    let impCount = $(".impCount").attr("data-id");
+function renderdata(tasklist) {
+    // let displaydata = $("#display-data");
+    // let impCount = $(".impCount").attr("data-id");
     let taskHtmlTwo = '';
-    // $(displaydata).html("");
+    // $("#display-data").html("");
     let taskHtml = '';
-    let count = 0;
+    let countComp = 0;
+
 
     // let taskCounr = ""
     if (tasklist) {
-        tasklist.forEach((element, count) => {
-            $(".countComp").html("");
+        tasklist.forEach((element) => {
+            // $(".countComp").html("");
 
-            let is_imp = "";
-            if (element.is_imp == 1) {
-                is_imp = "text-yellow-500";
-            } else {
-                is_imp = "text-white";
-            }
-            let isDon = "";
-            if (element.is_don == 0) {
-                isDon = "";
-            } else {
-                isDon = "bg-blue-500  rounded-full m-1 text-white";
-            }
+            let is_imp = (element.is_imp == 1) ? "text-yellow-500" : "text-white";
 
-            if (element.is_don == 1) {
-                taskHtmlTwo += `
-                                <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
-                                  <div  class="flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
-                                    <div class="flex items-center space-x-2">
-                                    <div class="check taskCompleted"  data-id="${element.id}" don-task="${element.is_don}">
-                                      <input type="checkbox" class="mr-2  ${isDon}"  >
-                                      </div>
-                                      <p class="newtask">${element.tasks_name}</p>
-                                    </div>
-                                    <div class="export-to-excel cursor-pointer"> down </div>
-                                     <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
-                                      <i class="  fa-regular fa-star"> </i>
-                                      </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>       
-                                `;
-                count++
-                $(".countComp").append(count);
-                // console.log(countComp);
-                // $("#display-data").html(taskHtml);
-                $("#CompTasks").html(taskHtmlTwo);
-                // $(".impCount").text(countTask);
-            } else {
-                // console.log("else");
-                taskHtml += `
+            let isDon = (element.is_don == 1) ? "bg-blue-500 rounded-full m-1 text-white" : "";
+
+
+
+
+            let disTask = `
                              <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
                                <div  class="flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
                                  <div class="flex items-center space-x-2"  >
@@ -179,12 +140,21 @@ function renderdata(tasklist, countTask) {
                                </div>
                              </div> 
               `;
-                $("#display-data").html(taskHtml);
-                // $("#CompTasks").html(taskHtml);
-                // $(".impCount").text(countTask);
+
+            if (element.is_don == 1) {
+                // alert("ok");
+                taskHtmlTwo += disTask;
+                countComp++;
+            } else {
+                taskHtml += disTask;
             }
-        }
-        );
+            (countComp == 0) ? $(".compHide").addClass("hidden") : $(".compHide").removeClass("hidden");
+
+
+            $("#display-data").html(taskHtml);
+            $("#CompTasks").html(taskHtmlTwo);
+            $(".countComp").html(countComp);
+        });
     } else {
         console.log("no data");
     }
@@ -476,7 +446,9 @@ $(document).on("click", ".getDefaultList", function () {
     }
     if (activeListId === "completed") {
         $(".removecomp").addClass("hidden");
-    } else if (activeListId === "Important" || activeListId === "Planned" || activeListId === "Planned" || activeListId === "all") {
+    } else if (activeListId == "Important" || activeListId == "Planned" || activeListId == "all") {
+        // alert("ok");
+
         $(".compHide").addClass("hidden");
     } else if (activeListId !== "Important") {
         $(".compHide").removeClass("hidden");
@@ -515,6 +487,8 @@ $(document).on("click", ".taskImp", function () {
                     $(".taskImps" + id).attr("data-imp", 0)
                     $(".taskImps" + id).addClass("text-white").removeClass("text-yellow-500");
                 }
+            } else {
+                console.error(res.massage);
             }
 
         }
@@ -525,7 +499,6 @@ $(document).on("click", ".taskImp", function () {
 $(document).on("click", ".taskCompleted", function () {
     let id = $(this).attr("data-id");
     let taskDon = $(this).attr("don-task");
-    // alert
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -536,18 +509,11 @@ $(document).on("click", ".taskCompleted", function () {
         },
         success: function (response) {
             let res = JSON.parse(response);
-            // console.log(res);
             if (res.success) {
                 toastr.success(res.massage);
                 $(".removeTask" + id).remove();
-
                 renderdata(res.complete);
 
-                if (res.countTaskComp > 0) {
-                    $(".compHide").removeClass("hidden");
-                } else {
-                    $(".compHide").addClass("hidden");
-                }
             }
         }
     });
@@ -555,12 +521,18 @@ $(document).on("click", ".taskCompleted", function () {
 
 
 $("#dropdown-btn").click(function () {
+    if ($("#CompTasks").hasClass("hidden")) {
+        $(".arrowDown").removeClass("hidden");
+        $(".arrowRight").addClass("hidden");
+    } else {
+
+        $(".arrowDown").addClass("hidden");
+        $(".arrowRight").removeClass("hidden");
+    }
     $("#CompTasks").toggleClass("hidden");
 });
 
-document.getElementById("export-to-excel").addEventListener("click", function () {
-    window.location.href = "table_create_excel.php?action=exportToExcel";
-});
+
 
 // $(document).on("click", ".taskCompleted, .taskImp", function () {
 //     let id = $(this).attr("data-id") || $(this).attr("data-id");
