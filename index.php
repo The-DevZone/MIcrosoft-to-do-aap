@@ -105,7 +105,7 @@ if (!isset($_SESSION['loginid'])) {
   <!-- Sidebar -->
   <aside id="sidebar-menu"
     class="w-full   overflow-y-scroll overflow-x-hidden md:overflow-y-auto relative top-0 left-0 md:w-1/6 bg-gray-800 h-screen md:h-screen p-4  flex-col hidden md:block">
-    <div class="flex items-center mb-6">
+    <div class="flex items-center mb-6 dropSetting">
       <!-- Profile Icon -->
       <div class="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
         <?php echo $_SESSION["logindata"]["firstname"][0];
@@ -116,6 +116,28 @@ if (!isset($_SESSION['loginid'])) {
         <p class="text-xs text-gray-400"><?php echo $_SESSION["logindata"]["email"]; ?></p>
       </div>
     </div>
+
+    <!-- setting start -->
+    <div class="w-64  hidden  user_setting">
+      <!-- Manage accounts -->
+      <div class="flex items-center space-x-3 hover:bg-gray-700 p-3 rounded cursor-pointer manageAccount">
+        <i class="fas fa-user-cog fa-lg text-gray-300"></i>
+        <span>Manage accounts</span>
+      </div>
+
+      <!-- Settings -->
+      <div class="flex items-center space-x-3 hover:bg-gray-700 p-3 rounded cursor-pointer">
+        <i class="fas fa-cog fa-lg text-gray-300"></i>
+        <span>Settings</span>
+      </div>
+
+      <!-- Sync -->
+      <div class="flex items-center space-x-3 hover:bg-gray-700 p-3 rounded cursor-pointer">
+        <i class="fas fa-sync-alt fa-lg text-gray-300"></i>
+        <span>Sync</span>
+      </div>
+    </div>
+    <!-- setting end -->
 
     <!-- Search Bar -->
     <form class="max-w-md mb-3">
@@ -164,7 +186,7 @@ if (!isset($_SESSION['loginid'])) {
       </div>
       <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList " data-id="completed">
         📂Completed</li>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Tasks">📂Tasks</li>
+      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="tasks">📂Tasks</li>
     </ul>
     <!-- Menu -->
     <nav>
@@ -254,17 +276,14 @@ if (!isset($_SESSION['loginid'])) {
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">My Day</h1>
       <span class="text-gray-400 max-sm:hidden">Friday, 17 January</span>
+      <button id="downloadExcel" class="btn btn-success">Download Tasks </button>
       <div>
 
-        <?php if (isset(($_SESSION['loginid'])) && !empty($_SESSION['loginid'])) { ?>
+        <!-- <?php if (isset(($_SESSION['loginid'])) && !empty($_SESSION['loginid'])) { ?>
 
           <form action="./config/server.php" method="post" id="logout_form">
-            <!-- <span class=""> <?php echo ($_SESSION['logindata']['firstname']); ?></span> -->
+             <?php echo ($_SESSION['logindata']['firstname']); ?></span> 
 
-            <!-- <span><i class="text-white text-2xl fa-solid fa-ellipsis-vertical "></i></span> -->
-
-            <!-- tooltip start -->
-            <!-- tooltip end  -->
 
             <button type="submit" name="logout" data-tooltip-target="tooltip-default"
               class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 cursor-pointer">Logout</button>
@@ -277,7 +296,7 @@ if (!isset($_SESSION['loginid'])) {
         <?php } else { ?>
           <span class="p-2 bg-blue-800 rounded-lg ml-2"><a href="login.php">Login</a></span>
           <span class="p-2 hover:bg-blue-800 rounded-lg ml-2"> <a href="signup.php"> SignUp </a></span>
-        <?php } ?>
+        <?php } ?> -->
       </div>
     </div>
     <!-- Header -->
@@ -423,6 +442,63 @@ if (!isset($_SESSION['loginid'])) {
       </ul>
     </div>
     <!-- Context Menu -->
+
+
+    <!-- manage account modal box -->
+    <div class="bg-gray-900 flex items-center justify-center ">
+      <div class="bg-gray-800 text-white w-96 rounded-lg shadow-lg p-5 space-y-5  hidden  " id="manageAccountModal">
+        <!-- Title -->
+        <h2 class="text-center text-lg font-semibold">Manage accounts</h2>
+
+        <!-- Account Info Row -->
+        <div class="flex items-center justify-between bg-gray-700 p-3 rounded">
+          <div class="flex items-center space-x-3">
+            <!-- Profile Icon -->
+            <?php if (isset(($_SESSION['loginid'])) && !empty($_SESSION['loginid'])) { ?>
+              <form action="./config/server.php" method="post" id="logout_form">
+
+                <div
+                  class="bg-purple-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-semibold">
+                  <?php echo $_SESSION["logindata"]["firstname"][0];
+                  echo $_SESSION["logindata"]["lastname"][0]; ?>
+                </div>
+                <!-- Name and Email -->
+                <p class="font-medium"><?php echo ($_SESSION['logindata']['firstname']); ?></p>
+                <p class="text-sm text-gray-300"><?php echo ($_SESSION['logindata']['email']); ?></p>
+
+
+                <!-- <div>
+              <p class="font-medium">Rohit Verma</p>
+              <p class="text-sm text-gray-300">rohit995379@gmail.com</p>
+            </div> -->
+            </div>
+            <!-- Sign Out Button -->
+            <div>
+              <button type="submit" name="logout" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Sign
+                out</button>
+            </div>
+          </div>
+          </form>
+        <?php } else { ?>
+          <p class="font-medium">No account logged in</p>
+          <p class="text-sm text-gray-300">Please log in to manage accounts</p>
+        <?php } ?>
+
+
+
+        <!-- Add Account -->
+        <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-700 p-3 rounded">
+          <i class="fas fa-plus text-white"></i>
+          <span>Add account</span>
+        </div>
+
+        <!-- Close Button -->
+        <div class="flex justify-end" id="closeManageAccountModal">
+          <button class="bg-black hover:bg-gray-900 text-white px-4 py-1 rounded">Close</button>
+        </div>
+      </div>
+    </div>
+    <!-- manage account modal box -->
   </main>
 
 

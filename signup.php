@@ -87,7 +87,7 @@ if (isset($_SESSION['loginid'])) {
 
             <!-- Submit Button -->
             <div class="w-full flex gap-5">
-                <button type="submit" name="submit"
+                <button type="submit"
                     class="w-96  bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg focus:ring-4 focus:ring-blue-300 focus:outline-none"
                     id="signup">
                     SignUp

@@ -35,7 +35,7 @@ $(document).on("click", "#task-add", function (e) {
     let url = form.attr("action");
     let activeListId = $(".active-list").attr("data-id");
     // let id = $(".taskImp").attr("data-id");
-    let getList = $(".active-list").data("id");
+    let listId = $(".active-list").data("id");
 
 
     let formData = form.serialize();
@@ -64,9 +64,7 @@ $(document).on("click", "#task-add", function (e) {
                     toastr.success(arr.massage);
 
                     $("#taskinput").val("").removeClass("border-red-500");
-                    // $(".removecomp").removeClass("hidden");
-                    renderdata(arr.tasklist);
-                    // Refresh task list after adding
+                    fetchdata(activeListId); // Refresh task list after adding
                 }
             }
         });
@@ -103,10 +101,7 @@ function fetchdata(id = '') {
 }
 
 function renderdata(tasklist) {
-    // let displaydata = $("#display-data");
-    // let impCount = $(".impCount").attr("data-id");
     let taskHtmlTwo = '';
-    // $("#display-data").html("");
     let taskHtml = '';
     let countComp = 0;
 
@@ -119,9 +114,6 @@ function renderdata(tasklist) {
             let is_imp = (element.is_imp == 1) ? "text-yellow-500" : "text-white";
 
             let isDon = (element.is_don == 1) ? "bg-blue-500 rounded-full m-1 text-white" : "";
-
-
-
 
             let disTask = `
                              <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
@@ -142,7 +134,6 @@ function renderdata(tasklist) {
               `;
 
             if (element.is_don == 1) {
-                // alert("ok");
                 taskHtmlTwo += disTask;
                 countComp++;
             } else {
@@ -439,6 +430,7 @@ $("#closemodallist").on("click", function () {
 $(document).on("click", ".getDefaultList", function () {
     let id = $(this).attr("data-id");
     let activeListId = $(this).data("id");
+    // alert(activeListId);
     $(".getDefaultList").removeClass("active-list");
     $(this).addClass("active-list");
     if (activeListId !== "completed") {
@@ -447,12 +439,17 @@ $(document).on("click", ".getDefaultList", function () {
     if (activeListId === "completed") {
         $(".removecomp").addClass("hidden");
     } else if (activeListId == "Important" || activeListId == "Planned" || activeListId == "all") {
-        // alert("ok");
-
+        alert("all");
         $(".compHide").addClass("hidden");
-    } else if (activeListId !== "Important") {
+    } else {
         $(".compHide").removeClass("hidden");
+
     }
+
+    // if (activeListId == "all") {
+    //     $(".compHide").addClass("hidden");
+    //     alert("all");
+    // }
     fetchdata(id);
 });
 
@@ -499,20 +496,25 @@ $(document).on("click", ".taskImp", function () {
 $(document).on("click", ".taskCompleted", function () {
     let id = $(this).attr("data-id");
     let taskDon = $(this).attr("don-task");
+    // let listId = $(".active-list").data("id");
+    let activeListId = $(".active-list").attr("data-id");
+    // alert(getList);
+    // console.log(activeListId);
     $.ajax({
         url: "./config/server.php",
         type: "POST",
         data: {
             updateDon: true,
             id: id,
-            isDon: taskDon
+            isDon: taskDon,
+            // listId: listId
         },
         success: function (response) {
             let res = JSON.parse(response);
             if (res.success) {
                 toastr.success(res.massage);
                 $(".removeTask" + id).remove();
-                renderdata(res.complete);
+                fetchdata(activeListId);
 
             }
         }
@@ -533,7 +535,27 @@ $("#dropdown-btn").click(function () {
 });
 
 
+$("#downloadExcel").on("click", function () {
+    // Call PHP file to download Excel
+    console.log("excel download");
+    window.location.href = "download_tasks.php";
+});
 
+
+// uaer setting input field
+$(document).on("click", ".dropSetting", function () {
+    setTimeout(() => {
+        $(".user_setting").toggleClass("hidden");
+    }, 200);
+})
+
+$(document).on("click", ".manageAccount", function () {
+    $("#manageAccountModal").toggleClass("hidden");
+})
+
+$("#closeManageAccountModal").click(function () {
+    $("#manageAccountModal").toggleClass("hidden");
+})
 // $(document).on("click", ".taskCompleted, .taskImp", function () {
 //     let id = $(this).attr("data-id") || $(this).attr("data-id");
 //     let type = $(this).hasClass("taskCompleted") ? "updateDon" : "updateImp";

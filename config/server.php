@@ -171,9 +171,7 @@ if (isset($_POST['task_submit'])) {
       $taskerrcount++;
     }
     $isimp = $_POST["is_imp"];
-    // if (empty($isimp)) {
-    //   $isimp = 0;
-    // }
+
     if ($taskerrcount == 0) {
       $qry = "insert into tasks (tasks_name,list_id , is_imp ,created_by , updated_by) values ('$taskinput' , '$activeListId' ,'$isimp', '$user_id' , '$user_id')";
       $result = mysqli_query($conn, $qry);
@@ -211,13 +209,17 @@ if (isset($_POST['getData'])) {
       $where = "AND is_imp = '1' and is_don = '0'";
     } elseif ($_POST['id'] == "completed") {
       $where = "AND is_don = '1'";
+    } elseif ($_POST['id'] == "all") {
+      $where = "";
+    } elseif ($_POST['id'] == "tasks") {
+      $where = "";
     } else {
       $where = "AND list_id = '$id'";
     }
   }
 
 
-  $result = mysqli_query($conn, "SELECT * FROM tasks WHERE created_by = '$_SESSION[loginid]' $where ORDER BY id DESC");
+  $result = mysqli_query($conn, "SELECT * FROM tasks WHERE created_by = '$_SESSION[loginid]'  $where ORDER BY id DESC");
 
   if ($result) {
     $data = [];
@@ -414,6 +416,9 @@ if (isset($_POST['updateDon'])) {
   $returndata["success"] = false;
   $id = $_POST['id'];
   $isDon = $_POST['isDon'];
+  $where = "";
+  // $listId = $_POST['listId'];
+
 
   if ($isDon == 0) {
     $is_don = 1;
@@ -422,20 +427,11 @@ if (isset($_POST['updateDon'])) {
   }
   $returndata["countTaskComp"] = 0;
 
-  $result = mysqli_query($conn, "update tasks set is_don ='$is_don' where id = '$id'");
+  $result = mysqli_query($conn, "update tasks set is_don ='$is_don'   where id = '$id'");
 
   if ($result) {
-    $qry = mysqli_query($conn, "select * from tasks where created_by = '$_SESSION[loginid]'");
-    // $returndata["countTaskComp"] = mysqli_num_rows($qry);
-
-    $data = [];
-    // if ($qry) {
-    while ($row = mysqli_fetch_assoc($qry)) {
-      $data[] = $row;
-    }
 
     $returndata["success"] = true;
-    $returndata["complete"] = $data;
     $returndata["massage"] = "Task completed successfully";
   } else {
     $returndata["success"] = true;
