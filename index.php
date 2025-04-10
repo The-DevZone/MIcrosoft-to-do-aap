@@ -164,7 +164,7 @@ if (!isset($_SESSION['loginid'])) {
         data-id="MyDay">
         <li>
           🌟My Day</li>
-        <div class="text-yellow-500"></div>
+        <div class="text-white count"></div>
       </div>
       <div
         class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList removeComplete  justify-between"
@@ -172,7 +172,7 @@ if (!isset($_SESSION['loginid'])) {
         <li class="">
           ⭐Important
         </li>
-        <div class="text-yellow-500 impCount" data-imp="Imp"></div>
+        <div class="text-white countImp" data-imp="Imp"></div>
       </div>
       <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Planned">
         <li>📅Planned

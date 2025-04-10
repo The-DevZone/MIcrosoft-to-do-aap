@@ -101,9 +101,14 @@ function fetchdata(id = '') {
 }
 
 function renderdata(tasklist) {
+    // console.log(tasklist); 
     let taskHtmlTwo = '';
     let taskHtml = '';
     let countComp = 0;
+    let count = 0;
+    let activeListId = $(".active-list").data("id");
+    let countImp = 0;
+    // alert(activeListId);
 
 
     // let taskCounr = ""
@@ -130,7 +135,7 @@ function renderdata(tasklist) {
                                    </div>
                                  </div>
                                </div>
-                             </div> 
+                             </div>         
               `;
 
             if (element.is_don == 1) {
@@ -138,17 +143,29 @@ function renderdata(tasklist) {
                 countComp++;
             } else {
                 taskHtml += disTask;
+                if (activeListId === "MyDay" && element.list_id === "MyDay") {
+                    count++;
+                } else if (activeListId == "Important" && element.is_imp == 1) {
+                    countImp++;
+                }
             }
-            (countComp == 0) ? $(".compHide").addClass("hidden") : $(".compHide").removeClass("hidden");
-
-
-            $("#display-data").html(taskHtml);
-            $("#CompTasks").html(taskHtmlTwo);
-            $(".countComp").html(countComp);
         });
+        (countComp == 0) ? $(".compHide").addClass("hidden") : $(".compHide").removeClass("hidden");
+
+        
+        // alert("loop");
+        $("#display-data").html(taskHtml);
+        $("#CompTasks").html(taskHtmlTwo);
+        $(".countComp").html(countComp);
+        $(".count").text(count);
+        $(".countImp").html(countImp);
     } else {
         console.log("no data");
     }
+}
+
+function counter() {
+
 }
 
 $(document).on("click", ".star-btn", function (e) {
@@ -430,21 +447,20 @@ $("#closemodallist").on("click", function () {
 $(document).on("click", ".getDefaultList", function () {
     let id = $(this).attr("data-id");
     let activeListId = $(this).data("id");
-    // alert(activeListId);
     $(".getDefaultList").removeClass("active-list");
     $(this).addClass("active-list");
-    if (activeListId !== "completed") {
-        $(".removecomp").removeClass("hidden");
-    }
-    if (activeListId === "completed") {
-        $(".removecomp").addClass("hidden");
-    } else if (activeListId == "Important" || activeListId == "Planned" || activeListId == "all") {
-        alert("all");
-        $(".compHide").addClass("hidden");
-    } else {
-        $(".compHide").removeClass("hidden");
+    // if (activeListId !== "completed") {
+    //     $(".removecomp").removeClass("hidden");
+    // }
+    // if (activeListId === "completed") {
+    //     $(".removecomp").addClass("hidden");
+    // } else if (activeListId == "Important" || activeListId == "Planned" || activeListId == "all") {
+    //     // alert("all");
+    //     $(".compHide").addClass("hidden");
+    // } else {
+    //     $(".compHide").removeClass("hidden");
 
-    }
+    // }
 
     // if (activeListId == "all") {
     //     $(".compHide").addClass("hidden");

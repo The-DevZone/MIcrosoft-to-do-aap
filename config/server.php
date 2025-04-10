@@ -209,8 +209,10 @@ if (isset($_POST['getData'])) {
       $where = "AND is_imp = '1' and is_don = '0'";
     } elseif ($_POST['id'] == "completed") {
       $where = "AND is_don = '1'";
+    } elseif ($_POST['id'] == "Planned") {
+      $where = " and is_don = '0'";
     } elseif ($_POST['id'] == "all") {
-      $where = "";
+      $where = " and is_don = '0'";
     } elseif ($_POST['id'] == "tasks") {
       $where = "";
     } else {
