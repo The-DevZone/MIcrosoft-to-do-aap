@@ -88,6 +88,7 @@ function fetchdata(id = '') {
         success: function (response) {
             let arr = JSON.parse(response);
             if (arr.success) {
+                // $(".count").text(arr.countasks)
                 renderdata(arr.tasklist);
             }
             else {
@@ -101,17 +102,14 @@ function fetchdata(id = '') {
 }
 
 function renderdata(tasklist) {
-    // console.log(tasklist); 
     let taskHtmlTwo = '';
     let taskHtml = '';
     let countComp = 0;
     let count = 0;
     let activeListId = $(".active-list").data("id");
     let countImp = 0;
-    // alert(activeListId);
 
 
-    // let taskCounr = ""
     if (tasklist) {
         tasklist.forEach((element) => {
             // $(".countComp").html("");
@@ -136,7 +134,7 @@ function renderdata(tasklist) {
                                  </div>
                                </div>
                              </div>         
-              `;
+                         `;
 
             if (element.is_don == 1) {
                 taskHtmlTwo += disTask;
@@ -152,7 +150,7 @@ function renderdata(tasklist) {
         });
         (countComp == 0) ? $(".compHide").addClass("hidden") : $(".compHide").removeClass("hidden");
 
-        
+
         // alert("loop");
         $("#display-data").html(taskHtml);
         $("#CompTasks").html(taskHtmlTwo);
@@ -164,9 +162,7 @@ function renderdata(tasklist) {
     }
 }
 
-function counter() {
 
-}
 
 $(document).on("click", ".star-btn", function (e) {
 
@@ -449,12 +445,14 @@ $(document).on("click", ".getDefaultList", function () {
     let activeListId = $(this).data("id");
     $(".getDefaultList").removeClass("active-list");
     $(this).addClass("active-list");
-    // if (activeListId !== "completed") {
-    //     $(".removecomp").removeClass("hidden");
-    // }
+    if (activeListId == "completed") {
+        $(".removecomp").addClass("hidden");
+    } else {
+        $(".removecomp").removeClass("hidden");
+    }
     // if (activeListId === "completed") {
-    //     $(".removecomp").addClass("hidden");
-    // } else if (activeListId == "Important" || activeListId == "Planned" || activeListId == "all") {
+    // } 
+    // else if (activeListId == "Important" || activeListId == "Planned" || activeListId == "all") {
     //     // alert("all");
     //     $(".compHide").addClass("hidden");
     // } else {

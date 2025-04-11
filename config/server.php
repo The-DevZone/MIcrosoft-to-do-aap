@@ -201,16 +201,12 @@ if (isset($_POST['getData'])) {
   $check_api = 0;
   $returndata["success"] = false;
   $id = $_POST['id'];
-
   $where = "";
-
   if (isset($_POST['id'])) {
     if ($_POST['id'] == 'Important') {
-      $where = "AND is_imp = '1' and is_don = '0'";
+      $where = "AND is_imp = '1' and is_don = '0' ";
     } elseif ($_POST['id'] == "completed") {
       $where = "AND is_don = '1'";
-    } elseif ($_POST['id'] == "Planned") {
-      $where = " and is_don = '0'";
     } elseif ($_POST['id'] == "all") {
       $where = " and is_don = '0'";
     } elseif ($_POST['id'] == "tasks") {
@@ -220,7 +216,6 @@ if (isset($_POST['getData'])) {
     }
   }
 
-
   $result = mysqli_query($conn, "SELECT * FROM tasks WHERE created_by = '$_SESSION[loginid]'  $where ORDER BY id DESC");
 
   if ($result) {
@@ -228,6 +223,9 @@ if (isset($_POST['getData'])) {
     while ($row = mysqli_fetch_assoc($result)) {
       $data[] = $row;
     }
+    $Count_query = mysqli_query($conn, "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]'  $where ");
+    $countTasks = mysqli_fetch_assoc($Count_query);
+    $returndata["countTask"] = $countTasks['countTask'];
     $returndata["tasklist"] = $data;
     // $returndata["countTask"] = $count;
     $returndata["success"] = true;
@@ -413,6 +411,7 @@ if (isset($_POST['updateImp'])) {
   }
   echo json_encode($returndata, true);
 }
+
 if (isset($_POST['updateDon'])) {
   $check_api = 0;
   $returndata["success"] = false;
@@ -442,8 +441,6 @@ if (isset($_POST['updateDon'])) {
   // }
   echo json_encode($returndata, true);
 }
-
-
 
 if ($check_api == 1) {
   $returndata["success"] = false;
