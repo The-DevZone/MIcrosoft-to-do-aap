@@ -162,31 +162,34 @@ if (!isset($_SESSION['loginid'])) {
     <ul class="space-y-3 border-b border-gray-200 mb-2 default-list">
       <div class=" active-list cursor-pointer flex items-center justify-between space-x-2 text-blue-400 getDefaultList "
         data-id="MyDay">
-        <li>
-          🌟My Day</li>
-        <div class="text-white count"></div>
+        <li>🌟My Day</li>
+        <div class="text-white myDayCount"></div>
       </div>
       <div
         class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList removeComplete  justify-between"
         data-id="Important">
-        <li class="">
-          ⭐Important
-        </li>
-        <div class="text-white countImp" data-imp="Imp"></div>
+        <li class="">⭐Important</li>
+        <div class="text-white ImportantCount"></div>
       </div>
       <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Planned">
         <li>📅Planned
         </li>
-        <div class="text-yellow-500 impCount" data-imp="Plan"></div>
+        <div class="text-white PlannedCount"></div>
       </div>
       <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="all">
         <li>📂All
         </li>
-        <div class="text-yellow-500 impCount" data-imp="All"></div>
+        <div class="text-white allCount"></div>
       </div>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList " data-id="completed">
-        📂Completed</li>
+      <div>
+        <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList " data-id="completed">
+          📂Completed</li>
+        <div class="text-white completedCount"></div>
+      </div>
+      <div>
       <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="tasks">📂Tasks</li>
+      <div class="text-white tasksCount"></div>
+      </div>
     </ul>
     <!-- Menu -->
     <nav>
@@ -417,6 +420,7 @@ if (!isset($_SESSION['loginid'])) {
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-check text-white"></i> Mark as completed
           </div>
+          <a href=""></a>
           <span class="text-gray-400 text-xs">Ctrl+D</span>
         </li>
         <hr class="border-gray-600">

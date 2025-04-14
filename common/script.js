@@ -88,7 +88,12 @@ function fetchdata(id = '') {
         success: function (response) {
             let arr = JSON.parse(response);
             if (arr.success) {
-                // $(".count").text(arr.countasks)
+                $(".myDayCount").text(arr.countTasks.MyDay)
+                $(".ImportantCount").text(arr.countTasks.Important)
+                $(".PlannedCount").text(arr.countTasks.Planned)
+                $(".allCount").text(arr.countTasks.all)
+                $(".completedCount").text(arr.countTasks.completed)
+                $(".tasksCount").text(arr.countTasks.tasks)
                 renderdata(arr.tasklist);
             }
             else {
@@ -105,14 +110,10 @@ function renderdata(tasklist) {
     let taskHtmlTwo = '';
     let taskHtml = '';
     let countComp = 0;
-    let count = 0;
-    let activeListId = $(".active-list").data("id");
-    let countImp = 0;
 
 
     if (tasklist) {
         tasklist.forEach((element) => {
-            // $(".countComp").html("");
 
             let is_imp = (element.is_imp == 1) ? "text-yellow-500" : "text-white";
 
@@ -138,14 +139,9 @@ function renderdata(tasklist) {
 
             if (element.is_don == 1) {
                 taskHtmlTwo += disTask;
-                countComp++;
             } else {
                 taskHtml += disTask;
-                if (activeListId === "MyDay" && element.list_id === "MyDay") {
-                    count++;
-                } else if (activeListId == "Important" && element.is_imp == 1) {
-                    countImp++;
-                }
+
             }
         });
         (countComp == 0) ? $(".compHide").addClass("hidden") : $(".compHide").removeClass("hidden");
@@ -155,8 +151,6 @@ function renderdata(tasklist) {
         $("#display-data").html(taskHtml);
         $("#CompTasks").html(taskHtmlTwo);
         $(".countComp").html(countComp);
-        $(".count").text(count);
-        $(".countImp").html(countImp);
     } else {
         console.log("no data");
     }

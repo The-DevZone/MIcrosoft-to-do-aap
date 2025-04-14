@@ -203,7 +203,11 @@ if (isset($_POST['getData'])) {
   $id = $_POST['id'];
   $where = "";
   if (isset($_POST['id'])) {
-    if ($_POST['id'] == 'Important') {
+    if ($_POST['id'] == 'MyDay') {
+      $where = "AND is_don = '1'";
+    } elseif ($_POST['id'] == 'Planned') {
+      $where = "AND is_don = '0' and is_imp = '0' ";
+    } elseif ($_POST['id'] == 'Important') {
       $where = "AND is_imp = '1' and is_don = '0' ";
     } elseif ($_POST['id'] == "completed") {
       $where = "AND is_don = '1'";
@@ -223,11 +227,29 @@ if (isset($_POST['getData'])) {
     while ($row = mysqli_fetch_assoc($result)) {
       $data[] = $row;
     }
-    $Count_query = mysqli_query($conn, "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]'  $where ");
-    $countTasks = mysqli_fetch_assoc($Count_query);
-    $returndata["countTask"] = $countTasks['countTask'];
+    $count_task = [
+      "MyDay" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' ",
+      "Important" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_imp = '1'",
+      "Planned" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_don = '0' AND is_don = '1'",
+      "all" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_don = '0'",
+      "completed" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' AND is_don = '0'",
+      "tasks" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_don = '0'",
+    ];
+    // print_r($count_task);
+
+    $count = [];
+    foreach ($count_task as $key => $value) {
+      $Count_query = mysqli_query($conn, $value);
+      if ($Count_query) {
+        $count[$key] = mysqli_fetch_assoc($Count_query)['countTask'];
+      } else {
+        $count[$key] = 0; // Default value if query fails
+      }
+    }
+    // print_r($count);
+    // die;
+    $returndata["countTasks"] = $count;
     $returndata["tasklist"] = $data;
-    // $returndata["countTask"] = $count;
     $returndata["success"] = true;
     $returndata["massage"] = "Data fetched success fully";
   } else {
