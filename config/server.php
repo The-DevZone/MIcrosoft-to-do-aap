@@ -203,16 +203,14 @@ if (isset($_POST['getData'])) {
   $id = $_POST['id'];
   $where = "";
   if (isset($_POST['id'])) {
-    if ($_POST['id'] == 'MyDay') {
-      $where = "AND is_don = '1'";
-    } elseif ($_POST['id'] == 'Planned') {
-      $where = "AND is_don = '0' and is_imp = '0' ";
-    } elseif ($_POST['id'] == 'Important') {
+    if ($_POST['id'] == 'Important') {
       $where = "AND is_imp = '1' and is_don = '0' ";
     } elseif ($_POST['id'] == "completed") {
       $where = "AND is_don = '1'";
     } elseif ($_POST['id'] == "all") {
-      $where = " and is_don = '0'";
+      $where = "AND is_don = '0'";
+    } elseif ($id = "MyDay") {
+      $where = "AND( list_id = 'MyDay' OR  list_id = 'Planned')";
     } elseif ($_POST['id'] == "tasks") {
       $where = "";
     } else {
@@ -228,11 +226,11 @@ if (isset($_POST['getData'])) {
       $data[] = $row;
     }
     $count_task = [
-      "MyDay" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' ",
-      "Important" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_imp = '1'",
-      "Planned" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_don = '0' AND is_don = '1'",
+      "MyDay" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and( list_id = 'MyDay' or list_id = 'Planned'   ) And is_don = '0'",
+      "Important" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_imp = '1' and is_don = '0'",
+      "Planned" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_don = '0' AND list_id = 'Planned'",
       "all" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_don = '0'",
-      "completed" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' AND is_don = '0'",
+      "completed" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' AND is_don = '1'",
       "tasks" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '$_SESSION[loginid]' and is_don = '0'",
     ];
     // print_r($count_task);
@@ -257,6 +255,59 @@ if (isset($_POST['getData'])) {
   }
   echo json_encode($returndata, true);
 }
+
+// if (isset($_POST['getData'])) {
+//   $returndata = ["success" => false];
+//   $id = $_POST['id'];
+//   $where = "";
+
+//   if ($id == 'Planned') {
+//     $where = "AND is_don = '0'";
+//   } elseif ($id == 'Important') {
+//     $where = "AND is_imp = '1' AND is_don = '0'";
+//   } elseif ($id == 'completed') {
+//     $where = "AND is_don = '1'";
+//   } elseif ($id == 'all') {
+//     $where = "AND is_don = '0'";
+//   } elseif ($id == 'tasks') {
+//     $where = "";
+//   } else {
+//     $where = "AND list_id = '$id'";
+//   }
+
+//   $result = mysqli_query($conn, "SELECT * FROM tasks WHERE created_by = '{$_SESSION['loginid']}' $where ORDER BY id DESC");
+
+//   if ($result) {
+//     $data = [];
+//     while ($row = mysqli_fetch_assoc($result)) {
+//       $data[] = $row;
+//     }
+
+//     // $count_task = [
+//     //   "MyDay" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '{$_SESSION['loginid']}' AND is_don = '0'",
+//     //   "Important" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '{$_SESSION['loginid']}' AND is_imp = '1' AND is_don = '0'",
+//     //   "Planned" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '{$_SESSION['loginid']}' AND is_don = '0' AND is_imp = '0'",
+//     //   "all" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '{$_SESSION['loginid']}' AND is_don = '0'",
+//     //   "completed" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '{$_SESSION['loginid']}' AND is_don = '1'",
+//     //   "tasks" => "SELECT COUNT(*) as countTask FROM tasks WHERE created_by = '{$_SESSION['loginid']}'"
+//     // ];
+
+//     // $count = [];
+//     // foreach ($count_task as $key => $query) {
+//     //   $Count_query = mysqli_query($conn, $query);
+//     //   $count[$key] = $Count_query ? mysqli_fetch_assoc($Count_query)['countTask'] : 0;
+//     // }
+
+//     // $returndata["countTasks"] = $count;
+//     $returndata["tasklist"] = $data;
+//     $returndata["success"] = true;
+//     $returndata["message"] = "Data fetched successfully";
+//   } else {
+//     $returndata["message"] = "No data found";
+//   }
+
+//   echo json_encode($returndata, true);
+// }
 
 // delete task  id 
 if (isset($_POST['deleteTask'])) {

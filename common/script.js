@@ -35,7 +35,7 @@ $(document).on("click", "#task-add", function (e) {
     let url = form.attr("action");
     let activeListId = $(".active-list").attr("data-id");
     // let id = $(".taskImp").attr("data-id");
-    let listId = $(".active-list").data("id");
+    // let listId = $(".active-list").data("id");
 
 
     let formData = form.serialize();
@@ -88,13 +88,13 @@ function fetchdata(id = '') {
         success: function (response) {
             let arr = JSON.parse(response);
             if (arr.success) {
+                renderdata(arr.tasklist);
                 $(".myDayCount").text(arr.countTasks.MyDay)
                 $(".ImportantCount").text(arr.countTasks.Important)
                 $(".PlannedCount").text(arr.countTasks.Planned)
                 $(".allCount").text(arr.countTasks.all)
                 $(".completedCount").text(arr.countTasks.completed)
                 $(".tasksCount").text(arr.countTasks.tasks)
-                renderdata(arr.tasklist);
             }
             else {
                 console.error(arr.massage);
@@ -139,9 +139,9 @@ function renderdata(tasklist) {
 
             if (element.is_don == 1) {
                 taskHtmlTwo += disTask;
+                countComp++
             } else {
                 taskHtml += disTask;
-
             }
         });
         (countComp == 0) ? $(".compHide").addClass("hidden") : $(".compHide").removeClass("hidden");
@@ -437,6 +437,9 @@ $("#closemodallist").on("click", function () {
 $(document).on("click", ".getDefaultList", function () {
     let id = $(this).attr("data-id");
     let activeListId = $(this).data("id");
+    let taskName = $(".taskName").attr("data-name")
+    // console.log(taskName)
+
     $(".getDefaultList").removeClass("active-list");
     $(this).addClass("active-list");
     if (activeListId == "completed") {
@@ -444,20 +447,16 @@ $(document).on("click", ".getDefaultList", function () {
     } else {
         $(".removecomp").removeClass("hidden");
     }
-    // if (activeListId === "completed") {
-    // } 
-    // else if (activeListId == "Important" || activeListId == "Planned" || activeListId == "all") {
-    //     // alert("all");
-    //     $(".compHide").addClass("hidden");
-    // } else {
-    //     $(".compHide").removeClass("hidden");
 
-    // }
+    if (taskName == "MyDay") {
+        $(".taskName").addClass("hidden");
+    } else if (taskName == "Important") {
+        $(".taskName").removeClass("hidden");
+    } else if (taskName !== "MyDay") {
+        $(".taskName").removeClass("hidden");
 
-    // if (activeListId == "all") {
-    //     $(".compHide").addClass("hidden");
-    //     alert("all");
-    // }
+    }
+
     fetchdata(id);
 });
 

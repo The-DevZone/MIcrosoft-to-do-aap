@@ -187,8 +187,9 @@ if (!isset($_SESSION['loginid'])) {
         <div class="text-white completedCount"></div>
       </div>
       <div>
-      <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="tasks">📂Tasks</li>
-      <div class="text-white tasksCount"></div>
+        <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="tasks">📂Tasks
+        </li>
+        <div class="text-white tasksCount"></div>
       </div>
     </ul>
     <!-- Menu -->
@@ -277,7 +278,14 @@ if (!isset($_SESSION['loginid'])) {
   <main class="  px-3  py-4 w-full main_screen_size h-screen overflow-y-scroll overflow-x-hidden" is_open="0">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">My Day</h1>
+      <div class="">
+        <h1 class="text-2xl font-bold taskName  taskPageName" data-name="MyDay">My Day</h1>
+        <h1 class="text-2xl font-bold hidden taskPageName" data-name="Important">Important</h1>
+        <h1 class="text-2xl font-bold hidden taskPageName" data-name="Planned">Planned</h1>
+        <h1 class="text-2xl font-bold hidden taskPageName" data-name="All">All</h1>
+        <h1 class="text-2xl font-bold hidden taskPageName" data-name="Completed">Completed</h1>
+        <h1 class="text-2xl font-bold hidden taskPageName" data-name="Tasks">Tasks</h1>
+      </div>
       <span class="text-gray-400 max-sm:hidden">Friday, 17 January</span>
       <button id="downloadExcel" class="btn btn-success">Download Tasks </button>
       <div>
@@ -334,8 +342,8 @@ if (!isset($_SESSION['loginid'])) {
     </div>
     <div class="w-full compHide">
       <button id="dropdown-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
-        <span class=" arrowDown ">&#8595;</span>
-        <span class=" arrowRight hidden ">&#8594;</span>
+        <span class=" arrowDown "><i class="fas fa-chevron-down text-white text-lg"></i></span>
+        <span class=" arrowRight hidden "><i class="fas fa-angle-right text-white text-lg"></i></span>
         completed
         <span class="countComp"></span>
       </button>
@@ -504,9 +512,6 @@ if (!isset($_SESSION['loginid'])) {
     </div>
     <!-- manage account modal box -->
   </main>
-
-
-
 
   <!-- Sidebar -->
   <div class="sidebar h-screen w-1/5  fixed top-0 right-0 hidden ">
