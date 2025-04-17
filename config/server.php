@@ -216,6 +216,7 @@ if (isset($_POST['getData'])) {
     } else {
       $where = "AND list_id = '$id'";
     }
+    
   }
 
   $result = mysqli_query($conn, "SELECT * FROM tasks WHERE created_by = '$_SESSION[loginid]'  $where ORDER BY id DESC");

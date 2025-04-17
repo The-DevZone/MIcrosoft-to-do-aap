@@ -161,33 +161,37 @@ if (!isset($_SESSION['loginid'])) {
     <!-- Menu -->
     <ul class="space-y-3 border-b border-gray-200 mb-2 default-list">
       <div class=" active-list cursor-pointer flex items-center justify-between space-x-2 text-blue-400 getDefaultList "
-        data-id="MyDay">
-        <li>🌟My Day</li>
+        data-id="MyDay" data-icon="fas fa-sun text-yellow-400 mr-2">
+        <li><i class="fas fa-sun"></i>My Day</li>
         <div class="text-white myDayCount"></div>
       </div>
       <div
         class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList removeComplete  justify-between"
-        data-id="Important">
-        <li class="">⭐Important</li>
+        data-id="Important" data-icon="fas fa-star text-yellow-400 mr-2">
+
+        <li class=""> <i class="fas fa-star"></i>Important</li>
         <div class="text-white ImportantCount"></div>
       </div>
-      <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Planned">
-        <li>📅Planned
+      <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="Planned"
+        data-icon="fas fa-calendar-alt text-blue-800 mr-2">
+        <li> <i class="fas fa-calendar-alt"></i>Planned
         </li>
         <div class="text-white PlannedCount"></div>
       </div>
-      <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="all">
-        <li>📂All
-        </li>
+      <div class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="all"
+        data-icon="fas fa-infinity text-green-300 mr-2">
+        <li> <i class="fas fa-infinity"></i> All</li>
         <div class="text-white allCount"></div>
       </div>
       <div>
-        <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList " data-id="completed">
-          📂Completed</li>
+        <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList " data-id="completed"
+          data-icon="fas fa-check-circle  text-red-500 mr-2"><i class="fas fa-check-circle"></i>
+          Completed</li>
         <div class="text-white completedCount"></div>
       </div>
       <div>
-        <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="tasks">📂Tasks
+        <li class="flex items-center space-x-2 cursor-pointer text-blue-400  getDefaultList" data-id="tasks"
+          data-icon="fas fa-calendar-check text-rose-950 mr-2"> <i class="fas fa-calendar-check"></i> Tasks</li>
         </li>
         <div class="text-white tasksCount"></div>
       </div>
@@ -225,7 +229,6 @@ if (!isset($_SESSION['loginid'])) {
     </nav>
 
     <!-- delete modal box -->
-    <!-- Main modal -->
     <div id="deletesidelist" tabindex="-1" aria-hidden="true"
       class="hidden close_modallist overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
       <div class="relative p-4 w-full max-w-md h-full md:h-auto">
@@ -279,16 +282,12 @@ if (!isset($_SESSION['loginid'])) {
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
       <div class="">
-        <h1 class="text-2xl font-bold taskName  taskPageName" data-name="MyDay">My Day</h1>
-        <h1 class="text-2xl font-bold hidden taskPageName" data-name="Important">Important</h1>
-        <h1 class="text-2xl font-bold hidden taskPageName" data-name="Planned">Planned</h1>
-        <h1 class="text-2xl font-bold hidden taskPageName" data-name="All">All</h1>
-        <h1 class="text-2xl font-bold hidden taskPageName" data-name="Completed">Completed</h1>
-        <h1 class="text-2xl font-bold hidden taskPageName" data-name="Tasks">Tasks</h1>
+        <h1 class="text-2xl font-bold taskHeader ">My Day</h1>
       </div>
       <span class="text-gray-400 max-sm:hidden">Friday, 17 January</span>
       <button id="downloadExcel" class="btn btn-success">Download Tasks </button>
       <div>
+
 
         <!-- <?php if (isset(($_SESSION['loginid'])) && !empty($_SESSION['loginid'])) { ?>
 
@@ -313,33 +312,51 @@ if (!isset($_SESSION['loginid'])) {
     <!-- Header -->
 
     <!-- display render data  -->
-    <div id="display-data">
-      <!-- <div
-        class="flex justify-between border w-full border-black h-10 bg-yellow-800 text-white rounded mb-2 p-2 items-center">
-        <div class="flex items-center space-x-2">
-          <input type="radio" class="mr-2  checkbox">
-         <p class="newtask">fit task html content</p> 
-        </div>
-        <div class="important-task">
+    <div id="display-data" class="">
+      <!-- <div class="bg-gray-800 text-white p-4 rounded-md flex items-center justify-between max-w-3xl w-full">
+        <div class="flex items-start gap-3">
+          <div class="w-5 h-5 mt-1 rounded-full border border-white"></div>
 
-          <div class="rating">
-            <input class="hidden" type="radio" id="star-1" id="radio_btn" name="star-radio" value="star-1">
-            <label for="star-1">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path pathLength="360"
-                  d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z">
-                </path>
-              </svg>
-            </label>
-            <div id="output "></div>
-            <form action="">
-              <input type="text" name="taskname" id="taskname"
-                class="w-full p-2 text-sm bg-gray-800 text-gray-100 rounded-lg border border-gray-700 focus:ring-blue-500 focus:border-blue-500">
-            </form>
+          <div>
+            <p class="text-white font-semibold">hellow</p>
+            <p class="text-gray-400 text-sm">Tasks</p>
           </div>
         </div>
+
+        Right Side: Star Icon
+        <div class="text-white hover:text-yellow-400 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.254 3.854a1 1 0 00.95.69h4.1c.969 0 1.371 1.24.588 1.81l-3.32 2.415a1 1 0 00-.364 1.118l1.254 3.854c.3.921-.755 1.688-1.538 1.118l-3.32-2.415a1 1 0 00-1.175 0l-3.32 2.415c-.783.57-1.838-.197-1.538-1.118l1.254-3.854a1 1 0 00-.364-1.118L2.157 9.281c-.783-.57-.38-1.81.588-1.81h4.1a1 1 0 00.95-.69l1.254-3.854z" />
+          </svg>
+        </div>
       </div> -->
+
+
+      <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu"
+        data-id="${element.id}">
+        <div
+          class="flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
+          <div class="flex items-center space-x-2">
+            <div class="check taskCompleted" data-id="${element.id}" don-task="${element.is_don}">
+              <input type="checkbox" class="mr-2  ${isDon}">
+            </div>
+            <p class="newtask">${element.tasks_name}</p>
+          </div>
+          <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}"
+            data-imp="${element.is_imp}">
+            <i class="  fa-regular fa-star"> </i>
+          </div>
+        </div>
+        <div>hello</div>
+      </div>
     </div>
+    </div>
+
+    </div>
+
+
+    <!-- </div> -->
     <div class="w-full compHide">
       <button id="dropdown-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
         <span class=" arrowDown "><i class="fas fa-chevron-down text-white text-lg"></i></span>

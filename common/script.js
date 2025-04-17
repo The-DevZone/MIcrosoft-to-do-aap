@@ -107,34 +107,54 @@ function fetchdata(id = '') {
 }
 
 function renderdata(tasklist) {
+
     let taskHtmlTwo = '';
     let taskHtml = '';
     let countComp = 0;
+    let taskStatus = ""
+    // alert(activeListId)
 
 
     if (tasklist) {
         tasklist.forEach((element) => {
-
-            let is_imp = (element.is_imp == 1) ? "text-yellow-500" : "text-white";
+            // let is_imp = (element.is_imp == 1) ? "text-yellow-500" : "text-white";
+            let is_imp = "text-white";
+            if (element.is_imp == 1) {
+                is_imp = "text-yellow-500";
+                if (element.list_id == "Important") {
+                    taskStatus = `MyDay`;
+                }
+            }
 
             let isDon = (element.is_don == 1) ? "bg-blue-500 rounded-full m-1 text-white" : "";
 
+            if (element.list_id == "MyDay") {
+                taskStatus = `Tasks`
+
+            } else if (element.list_id == "Important") {
+                taskStatus = `MyDay  Task `
+            }
+
             let disTask = `
-                             <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}" >
-                               <div  class="flex justify-between border w-full border-black  bg-gray-800 text-white rounded mb-2 p-2 items-center">
-                                 <div class="flex items-center space-x-2"  >
-                                 <div class="check taskCompleted"  data-id="${element.id}"  don-task="${element.is_don}">
-                                   <input type="checkbox" class="mr-2  ${isDon}"  >
+                            <div class="bg-gray-800 text-white mb-4 p-2 rounded-md flex items-center justify-between  w-full task-option  deletebtn removeTask${element.id} sidebarmenu" data-id="${element.id}">
+                                 <!-- Left Side: Checkbox + Text -->
+                                 <div class="flex items-start gap-3">
+                                   <!-- Circle Checkbox -->
+                                   <div class=" check w-5 h-5 mt-1 rounded-full border border-white taskCompleted ${isDon}" data-id="${element.id}"  don-task="${element.is_don}" ></div>
+
+                                   <!-- Task Text -->
+                                   <div>
+                                     <p class="text-white font-semibold text-lg">${element.tasks_name}</p>
+                                     <p class="text-gray-400 text-sm "> ${taskStatus}</p>
                                    </div>
-                                   <p class="newtask">${element.tasks_name}</p>
                                  </div>
-                                  <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
+
+                                 <!-- Right Side: Star Icon -->
+                                 <div class="star-btn ${is_imp}  hover:text-yellow-300 taskImp taskImps${element.id}" data-id="${element.id}" data-imp="${element.is_imp}">
                                    <i class="  fa-regular fa-star"> </i>
                                    </div>
-                                   </div>
-                                 </div>
-                               </div>
-                             </div>         
+
+                                 </div>   
                          `;
 
             if (element.is_don == 1) {
@@ -437,8 +457,8 @@ $("#closemodallist").on("click", function () {
 $(document).on("click", ".getDefaultList", function () {
     let id = $(this).attr("data-id");
     let activeListId = $(this).data("id");
-    let taskName = $(".taskName").attr("data-name")
-    // console.log(taskName)
+    // let taskName = $(".taskName").attr("data-name")
+    let taskIcon = $(this).attr("data-icon");
 
     $(".getDefaultList").removeClass("active-list");
     $(this).addClass("active-list");
@@ -448,14 +468,7 @@ $(document).on("click", ".getDefaultList", function () {
         $(".removecomp").removeClass("hidden");
     }
 
-    if (taskName == "MyDay") {
-        $(".taskName").addClass("hidden");
-    } else if (taskName == "Important") {
-        $(".taskName").removeClass("hidden");
-    } else if (taskName !== "MyDay") {
-        $(".taskName").removeClass("hidden");
-
-    }
+    $(".taskHeader").html(`<i class="mr-4 ${taskIcon}"> ${id}</i>`);
 
     fetchdata(id);
 });
@@ -503,10 +516,7 @@ $(document).on("click", ".taskImp", function () {
 $(document).on("click", ".taskCompleted", function () {
     let id = $(this).attr("data-id");
     let taskDon = $(this).attr("don-task");
-    // let listId = $(".active-list").data("id");
     let activeListId = $(".active-list").attr("data-id");
-    // alert(getList);
-    // console.log(activeListId);
     $.ajax({
         url: "./config/server.php",
         type: "POST",
@@ -514,7 +524,6 @@ $(document).on("click", ".taskCompleted", function () {
             updateDon: true,
             id: id,
             isDon: taskDon,
-            // listId: listId
         },
         success: function (response) {
             let res = JSON.parse(response);
@@ -522,7 +531,6 @@ $(document).on("click", ".taskCompleted", function () {
                 toastr.success(res.massage);
                 $(".removeTask" + id).remove();
                 fetchdata(activeListId);
-
             }
         }
     });
@@ -541,13 +549,11 @@ $("#dropdown-btn").click(function () {
     $("#CompTasks").toggleClass("hidden");
 });
 
-
 $("#downloadExcel").on("click", function () {
     // Call PHP file to download Excel
     console.log("excel download");
     window.location.href = "download_tasks.php";
 });
-
 
 // uaer setting input field
 $(document).on("click", ".dropSetting", function () {
@@ -563,6 +569,7 @@ $(document).on("click", ".manageAccount", function () {
 $("#closeManageAccountModal").click(function () {
     $("#manageAccountModal").toggleClass("hidden");
 })
+
 // $(document).on("click", ".taskCompleted, .taskImp", function () {
 //     let id = $(this).attr("data-id") || $(this).attr("data-id");
 //     let type = $(this).hasClass("taskCompleted") ? "updateDon" : "updateImp";
