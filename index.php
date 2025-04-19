@@ -313,26 +313,6 @@ if (!isset($_SESSION['loginid'])) {
 
     <!-- display render data  -->
     <div id="display-data" class="">
-      <!-- <div class="bg-gray-800 text-white p-4 rounded-md flex items-center justify-between max-w-3xl w-full">
-        <div class="flex items-start gap-3">
-          <div class="w-5 h-5 mt-1 rounded-full border border-white"></div>
-
-          <div>
-            <p class="text-white font-semibold">hellow</p>
-            <p class="text-gray-400 text-sm">Tasks</p>
-          </div>
-        </div>
-
-        Right Side: Star Icon
-        <div class="text-white hover:text-yellow-400 cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.254 3.854a1 1 0 00.95.69h4.1c.969 0 1.371 1.24.588 1.81l-3.32 2.415a1 1 0 00-.364 1.118l1.254 3.854c.3.921-.755 1.688-1.538 1.118l-3.32-2.415a1 1 0 00-1.175 0l-3.32 2.415c-.783.57-1.838-.197-1.538-1.118l1.254-3.854a1 1 0 00-.364-1.118L2.157 9.281c-.783-.57-.38-1.81.588-1.81h4.1a1 1 0 00.95-.69l1.254-3.854z" />
-          </svg>
-        </div>
-      </div> -->
-
-
       <div class="text-center  overflow-hidden task-option  deletebtn removeTask${element.id} sidebarmenu"
         data-id="${element.id}">
         <div
@@ -424,8 +404,145 @@ if (!isset($_SESSION['loginid'])) {
             class=" task_input  bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search branch name..." />
         </div>
+        <!-- Right: Font Awesome Icons -->
+        <div class="flex items-center space-x-5 text-white text-2xl cursor-pointer ">
+          <!-- Home Icon + Text -->
+          <div class="flex items-center space-x-1">
+            <i class="fas fa-house"></i>
+            <span>Tasks</span>
+          </div>
+
+          <!-- Calendar Icon -->
+          <div class="relative todayCalendar flex  ">
+            <i class="fas fa-calendar-days"></i>
+            <span class="showDay mx-2"></span>
+          </div>
+          <!-- click funcanality set days -->
+          <div
+            class="setTasksClander hidden w-64 bg-gray-800 absolute bottom-[103%] right-2 text-white rounded-lg shadow-md p-2 ">
+            <!-- Today -->
+            <div class="flex justify-between items-center hover:bg-gray-700 p-2 rounded-md cursor-pointer">
+              <div class="flex items-center space-x-2 setToday"  data-day="Today">
+                <i class="fas fa-calendar-day text-gray-400"></i>
+                <span >Today</span>
+              </div>
+              <span class="text-gray-400">Fri</span>
+            </div>
+
+            <!-- Tomorrow -->
+            <div class="flex  justify-between items-center hover:bg-gray-700 p-2 rounded-md cursor-pointer">
+              <div class="flex items-center space-x-2 setToday " data-day="Tomorrow">
+                <i class="fas fa-arrow-right text-gray-400"></i>
+                <span>Tomorrow</span>
+              </div>
+              <span class="text-gray-400">Sat</span>
+            </div>
+
+            <!-- Next Week -->
+            <div class="flex justify-between items-center hover:bg-gray-700 p-2 rounded-md cursor-pointer">
+              <div class="flex items-center space-x-2 setToday">
+                <i class="fas fa-forward text-gray-400"></i>
+                <span>Next week</span>
+              </div>
+              <span class="text-gray-400">Sun</span>
+            </div>
+
+            <hr class="my-2 border-gray-600" />
+
+            <!-- Pick a date -->
+            <div class="flex items-center space-x-2 hover:bg-gray-700 p-2 rounded-md pickDate cursor-pointer"
+              data-day="PickDate">
+              <i class="fas fa-calendar-alt text-gray-400"></i>
+              <span>Pick a date</span>
+            </div>
+          </div>
+          <!-- click funcanality set days -->
+
+
+          <!-- Clock Icon -->
+          <div class="clockDateAndTime">
+            <i class="fas fa-clock"></i>
+          </div>
+          <!-- pick a date and time -->
+          <div
+            class="w-64 pickTime hidden absolute bottom-[103%] right-2 bg-gray-800 rounded shadow-lg text-white border border-gray-700">
+            <ul>
+              <!-- Later today -->
+              <li class="flex justify-between items-center px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <div class="flex items-center gap-2">
+                  <span>⏰</span>
+                  <span>Later today</span>
+                </div>
+                <span class="text-sm text-gray-400">6:00 AM</span>
+              </li>
+
+              <!-- Tomorrow -->
+              <li class="flex justify-between items-center px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <div class="flex items-center gap-2">
+                  <span>➡️</span>
+                  <span>Tomorrow</span>
+                </div>
+                <span class="text-sm text-gray-400">Sun, 9:00 AM</span>
+              </li>
+
+              <!-- Pick a date & time -->
+              <li class="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <span>📅</span>
+                <span>Pick a date & time</span>
+              </li>
+            </ul>
+          </div>
+          <!-- pick a date and time -->
+
+          <!-- Replay Icon -->
+          <div class="repeatTaskButton">
+            <i class="fas fa-rotate-left"></i>
+          </div>
+          <!-- Repeat options -->
+          <div
+            class=" repeatTask hidden absolute bottom-[103%] right-2 mt-4 w-64 bg-gray-800 rounded shadow-lg text-white border border-gray-700">
+            <ul>
+              <!-- Daily -->
+              <li class="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <span>🔲</span>
+                <span>Daily</span>
+              </li>
+
+              <!-- Weekdays -->
+              <li class="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <span>🔲</span>
+                <span>Weekdays</span>
+              </li>
+
+              <!-- Weekly -->
+              <li class="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <span>🔲</span>
+                <span>Weekly</span>
+              </li>
+
+              <!-- Monthly -->
+              <li class="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <span>🔲</span>
+                <span>Monthly</span>
+              </li>
+
+              <!-- Yearly -->
+              <li class="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <span>✨</span>
+                <span>Yearly</span>
+              </li>
+
+              <!-- Custom -->
+              <li class="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer">
+                <span>🗓️</span>
+                <span>Custom</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
         <button type="submit" id="task-add"
-          class="p-2 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add
+          class="p-2 hidden ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add
         </button>
       </form>
     </div>

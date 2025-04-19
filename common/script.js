@@ -34,9 +34,6 @@ $(document).on("click", "#task-add", function (e) {
     let form = $("#taskform");
     let url = form.attr("action");
     let activeListId = $(".active-list").attr("data-id");
-    // let id = $(".taskImp").attr("data-id");
-    // let listId = $(".active-list").data("id");
-
 
     let formData = form.serialize();
     formData += "&activeListId=" + activeListId;
@@ -111,7 +108,7 @@ function renderdata(tasklist) {
     let taskHtmlTwo = '';
     let taskHtml = '';
     let countComp = 0;
-    let taskStatus = ""
+    let taskStatus = "";
     // alert(activeListId)
 
 
@@ -122,17 +119,21 @@ function renderdata(tasklist) {
             if (element.is_imp == 1) {
                 is_imp = "text-yellow-500";
                 if (element.list_id == "Important") {
+                    alert();
                     taskStatus = `MyDay`;
                 }
             }
 
             let isDon = (element.is_don == 1) ? "bg-blue-500 rounded-full m-1 text-white" : "";
 
+
             if (element.list_id == "MyDay") {
                 taskStatus = `Tasks`
-
+                if (element.list_id == "Important") {
+                    taskStatus = `MyDay`;
+                }
             } else if (element.list_id == "Important") {
-                taskStatus = `MyDay  Task `
+                taskStatus = `MyDay Task`
             }
 
             let disTask = `
@@ -175,8 +176,6 @@ function renderdata(tasklist) {
         console.log("no data");
     }
 }
-
-
 
 $(document).on("click", ".star-btn", function (e) {
 
@@ -570,6 +569,49 @@ $("#closeManageAccountModal").click(function () {
     $("#manageAccountModal").toggleClass("hidden");
 })
 
+
+// calender set a date on tasks 
+$(document).on("click", ".todayCalendar", function () {
+    $(".setTasksClander").toggleClass("hidden")
+})
+// calender set a date on tasks
+
+// clock a set time and date 
+$(document).on("click", ".clockDateAndTime", function () {
+    $(".pickTime").toggleClass("hidden")
+})
+
+// clock a set time and date 
+
+// set a repeat task 
+$(document).on("click", ".repeatTaskButton", function () {
+    $(".repeatTask").toggleClass("hidden")
+})
+// set a repeat task 
+
+//closet function task add imput field 
+$(document).click(function (event) {
+    if (!$(event.target).closest(".clockDateAndTime , .todayCalendar , .repeatTaskButton").length) {
+        $(".pickTime").addClass("hidden");
+        $(".setTasksClander").addClass("hidden");
+        $(".repeatTask").addClass("hidden");
+    }
+})
+//closet function task add imput field
+
+
+// set on today tasks
+$(document).on("click", ".setToday", function () {
+    let dayId = $(this).attr("data-day");
+    $(".showDay").html(`${dayId}`)
+})
+
+$('.pickDate').click(function(){
+    $( "#datepicker1" ).datepicker({
+showButtonPanel: true
+});
+});
+// set on today tasks
 // $(document).on("click", ".taskCompleted, .taskImp", function () {
 //     let id = $(this).attr("data-id") || $(this).attr("data-id");
 //     let type = $(this).hasClass("taskCompleted") ? "updateDon" : "updateImp";
